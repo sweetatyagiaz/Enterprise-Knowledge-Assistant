@@ -31,7 +31,10 @@ def test_load_rejects_empty_content():
 
 
 def test_load_rejects_invalid_utf8():
-    with pytest.raises(UnicodeDecodeError):
+    with pytest.raises(
+        ValueError,
+        match="Invalid text document encoding. UTF-8 is required.",
+    ):
         load_document("notes.txt", b"\xff\xfe\xfa")
 
 

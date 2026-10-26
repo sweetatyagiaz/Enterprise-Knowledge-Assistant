@@ -23,7 +23,12 @@ def load_document(filename: str, content: bytes) -> str:
         raise ValueError("The uploaded document is empty.")
 
     if extension in {".txt", ".md"}:
-        return content.decode("utf-8-sig")
+        try:
+            return content.decode("utf-8-sig")
+        except UnicodeDecodeError as exc:
+            raise ValueError(
+                "Invalid text document encoding. UTF-8 is required."
+            ) from exc
 
     if extension == ".pdf":
         try:
