@@ -263,5 +263,9 @@ def test_ask_rejects_null_question(client):
     response = client.post("/ask", json={"question": None})
     assert response.status_code == 422
 
+def test_ask_rejects_numeric_question(client):
+    response = client.post("/ask", json={"question": 123})
+    assert response.status_code == 422
+
 
 
