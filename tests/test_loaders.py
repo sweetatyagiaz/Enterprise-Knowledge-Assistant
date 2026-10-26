@@ -29,6 +29,10 @@ def test_load_rejects_empty_content():
     with pytest.raises(ValueError, match="document is empty"):
         load_document("notes.txt", b"")
 
+def test_load_rejects_whitespace_only_text():
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("notes.txt", b"   \n\t  ")
+
 
 def test_load_rejects_invalid_utf8():
     with pytest.raises(

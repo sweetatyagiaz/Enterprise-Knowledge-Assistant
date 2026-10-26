@@ -24,11 +24,16 @@ def load_document(filename: str, content: bytes) -> str:
 
     if extension in {".txt", ".md"}:
         try:
-            return content.decode("utf-8-sig")
+            text = content.decode("utf-8-sig")
         except UnicodeDecodeError as exc:
             raise ValueError(
                 "Invalid text document encoding. UTF-8 is required."
             ) from exc
+
+        if not text.strip():
+            raise ValueError("The text document contains no usable text.")
+
+        return text
 
     if extension == ".pdf":
         try:
