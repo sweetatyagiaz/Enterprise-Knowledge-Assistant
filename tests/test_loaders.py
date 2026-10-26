@@ -107,3 +107,8 @@ def test_load_encrypted_pdf():
 
     with pytest.raises(ValueError, match="Encrypted PDFs"):
         load_document("encrypted.pdf", buffer.getvalue())
+
+def test_load_rejects_whitespace_only_markdown():
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("notes.md", b"  \n\t  ")
+
