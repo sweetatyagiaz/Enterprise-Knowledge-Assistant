@@ -290,4 +290,9 @@ def test_ask_rejects_overlong_question(client):
     assert client.post("/ask", json={"question": "A" * 4001}).status_code == 422
 
 
+def test_ask_accepts_max_question_length(client, mock_assistant):
+    response = client.post("/ask", json={"question": "A" * 4000})
+    assert response.status_code == 200
+
+
 
