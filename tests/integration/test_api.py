@@ -172,3 +172,20 @@ def test_ask_handles_service_unavailable(client, mock_assistant):
 
     assert response.status_code == 503
     assert response.json()["detail"] == "Model unavailable"
+
+
+def test_upload_accepts_file_at_size_limit(client, mock_assistant, monkeypatch):
+    monkeypatch.setattr(
+        api_main,
+        "get_settings",
+        lambda: SimpleNamespace(max_upload_mb=1),
+    )
+    content = b"x" * (1024 * 1024)
+
+    response = client.post(
+        "/documents",
+        files={"file": ("boundary.txt", content, "text/plain")},
+    )
+
+    assert response.status_code == 200
+    mock_assistant.ingest.assert_called_once_with("boundary.txt", content)
