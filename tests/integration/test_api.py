@@ -300,5 +300,11 @@ def test_ask_accepts_null_top_k(client):
         json={"question": "Valid question", "top_k": None},
     ).status_code == 200
 
+def test_ask_rejects_string_top_k(client):
+    assert client.post(
+        "/ask",
+        json={"question": "Valid question", "top_k": "five"},
+    ).status_code == 422
+
 
 
