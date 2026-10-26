@@ -112,3 +112,22 @@ def test_load_rejects_whitespace_only_markdown():
     with pytest.raises(ValueError, match="no usable text"):
         load_document("notes.md", b"  \n\t  ")
 
+def test_load_whitespace_only_docx():
+    document = Document()
+    document.add_paragraph("   \t  ")
+    buffer = BytesIO()
+    document.save(buffer)
+
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("whitespace.docx", buffer.getvalue())
+
+
+def test_load_whitespace_only_pdf():
+    writer = PdfWriter()
+    writer.add_blank_page(width=72, height=72)
+    buffer = BytesIO()
+    writer.write(buffer)
+
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("whitespace.pdf", buffer.getvalue())
+
