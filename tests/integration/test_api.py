@@ -255,4 +255,9 @@ def test_ask_accepts_question_with_surrounding_whitespace(
         "The retention period is 90 days."
     )
 
+def test_ask_rejects_missing_question(client):
+    response = client.post("/ask", json={})
+    assert response.status_code == 422
+
+
 
