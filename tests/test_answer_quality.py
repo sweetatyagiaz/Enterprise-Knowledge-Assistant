@@ -562,4 +562,40 @@ def test_grounding_rejects_unsupported_retrieval_accuracy():
 
     assert result["label"] in {"UNSUPPORTED", "UNCERTAIN"}
 
+def test_empty_retrieval_returns_no_sources(make_assistant):
+    result, _ = make_assistant(
+        "What is the annual revenue?",
+        [],
+        "This answer should not be used when retrieval is empty.",
+    )
+
+    assert result["sources"] == []
+    assert result["answer"] == (
+        "I could not find relevant information in the uploaded documents."
+    )
+
+def test_empty_retrieval_does_not_call_llm(make_assistant, monkeypatch):
+    calls = []
+
+    class FakeOpenAI:
+        def __init__(self, api_key):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=lambda **kwargs: calls.append(kwargs)
+                )
+            )
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+
+    result, messages = make_assistant(
+        "What is the annual revenue?",
+        [],
+        "Unused generated answer.",
+    )
+
+    assert result["sources"] == []
+    assert calls == []
+    assert messages == []
+
+
 
