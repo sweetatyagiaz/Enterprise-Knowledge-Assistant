@@ -337,5 +337,25 @@ def test_ask_accepts_maximum_top_k(client, mock_assistant):
     )
     assert response.status_code == 200
 
+@pytest.mark.parametrize(
+    ("filename", "content", "error"),
+    [
+        ("empty.txt", b"", "empty"),
+        ("invalid.txt", b"\xff\xfe", "Invalid text document encoding"),
+        ("blank.txt", b"   \n\t", "no usable text"),
+        ("notes.csv", b"a,b", "Unsupported file type"),
+    ],
+)
+def test_upload_rejects_invalid_documents(
+    client, mock_assistant, filename, content, error
+):
+    mock_assistant.ingest.side_effect = ValueError(error)
 
+    response = client.post(
+        "/documents",
+        files={"file": (filename, content, "text/plain")},
+    )
+
+    assert response.status_code == 400
+    assert error in response.json()["detail"]
 
