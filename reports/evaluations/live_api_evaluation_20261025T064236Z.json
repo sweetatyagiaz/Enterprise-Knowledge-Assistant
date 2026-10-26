@@ -1,0 +1,579 @@
+{
+  "timestamp_utc": "2026-10-25T06:42:36.004591+00:00",
+  "api_url": "http://127.0.0.1:8000/ask",
+  "dataset": "tests/data/rag_eval.json",
+  "results": [
+    {
+      "id": "RAG-001",
+      "question": "What are the main components of this project's RAG architecture?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "Document Loader",
+        "Text Chunking",
+        "OpenAI Embeddings",
+        "SQLite Vector Store",
+        "Similarity Search",
+        "OpenAI Chat Model"
+      ],
+      "answer": "The main components of this project's RAG (Retrieval-Augmented Generation) architecture are:\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.  \n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.  \n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` model by default to convert text into 1536-dimensional vectors.  \n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.  \n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.  \n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.  \n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.  \n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.5759838223457336,
+          "hybrid_score": 0.5853212000926336
+        },
+        {
+          "filename": "README.md",
+          "text": "## Learning objectives\n\nThis project demonstrates the core RAG flow:\n\n1.  Ingest documents.\n2.  Split text into overlapping chunks.\n3.  Generate embeddings.\n4.  Store and retrieve vectors.\n5.  Build context from retrieved passages.\n6.  Generate an answer grounded in that context.\n7.  Evaluate retrieval quality, answer faithfulness, latency, and cost.\n\n------------------------------------------------------------------------\n\n**Project:** AI Architect Portfolio --- Sprint 1\\\n**Component:** Enterprise Knowledge Assistant",
+          "score": 0.5415767431259155,
+          "hybrid_score": 0.43618255734443667
+        },
+        {
+          "filename": "README.md",
+          "text": "## Project structure\n\n``` text\nai-architect-portfolio/\n├── ai_core/\n│   ├── __init__.py\n│   ├── settings.py\n│   ├── chunking.py\n│   ├── rag.py\n│   ├── vector_store.py\n│   ├── embeddings/\n│   │   ├── __init__.py\n│   │   └── service.py\n│   └── ingestion/\n│       ├── __init__.py\n│       └── loaders.py\n├── api/\n│   └── main.py\n├── tests/\n├── data/\n├── .env.example\n├── .gitignore\n├── requirements.txt\n└── README.md\n```\n\nYour local folder structure may contain additional files as the project\ndevelops.",
+          "score": 0.4024571478366852,
+          "hybrid_score": 0.3618428608775139
+        },
+        {
+          "filename": "README.md",
+          "text": "# Enterprise Knowledge Assistant\n\nA starter Retrieval-Augmented Generation (RAG) application built with\n**FastAPI**, **OpenAI embeddings**, **SQLite**, and **NumPy**. Upload\ndocuments, index their text chunks, and ask questions grounded in\nretrieved passages.",
+          "score": 0.4318245053291321,
+          "hybrid_score": 0.3538683789968491
+        },
+        {
+          "filename": "README.md",
+          "text": "### 3. Ask a question\n\nIn Swagger UI, expand `POST /ask` and submit:\n\n``` json\n{\n  \"question\": \"What are the main components of this project?\",\n  \"top_k\": 5\n}\n```\n\nOr use `curl`:\n\n``` bash\ncurl -X POST http://127.0.0.1:8000/ask \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"question\":\"What are the main components of this project?\",\"top_k\":5}'\n```\n\nThe API should return an answer and source information from retrieved\nchunks. Actual responses depend on the uploaded document and successful\nOpenAI API access.",
+          "score": 0.3030321002006531,
+          "hybrid_score": 0.32060740848382313
+        }
+      ]
+    },
+    {
+      "id": "RAG-002",
+      "question": "Which embedding model does the project use by default?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "text-embedding-3-small"
+      ],
+      "answer": "The project uses the `text-embedding-3-small` embedding model by default.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.6491242051124573,
+          "hybrid_score": 0.736843153834343
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.4290522038936615,
+          "hybrid_score": 0.5717891529202461
+        },
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.37651148438453674,
+          "hybrid_score": 0.5323836132884026
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.45580562949180603,
+          "hybrid_score": 0.49185422211885454
+        },
+        {
+          "filename": "README.md",
+          "text": "### 3. Configure environment variables\n\nCreate a local `.env` file:\n\n``` bash\ncp .env.example .env\n```\n\nIf `.env.example` does not exist, create `.env` manually with:\n\n``` dotenv\nOPENAI_API_KEY=replace_with_your_openai_api_key\nCHAT_MODEL=gpt-4.1-mini\nEMBEDDING_MODEL=text-embedding-3-small\nEMBEDDING_DIMENSIONS=1536\nDATA_DIR=data\nSQLITE_PATH=data/vector_store.sqlite3\nCHUNK_SIZE=900\nCHUNK_OVERLAP=150\nTOP_K=5\nMAX_UPLOAD_MB=15\n```\n\nReplace the placeholder with your real API key. **Never commit `.env` or\nexpose your API key in source control.**",
+          "score": 0.26832738518714905,
+          "hybrid_score": 0.4512455388903618
+        }
+      ]
+    },
+    {
+      "id": "RAG-003",
+      "question": "Which database stores the document chunks and embeddings?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "sqlite"
+      ],
+      "answer": "The document chunks and embeddings are stored in a local SQLite database at `data/vector_store.sqlite3`.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.621510922908783,
+          "hybrid_score": 0.6061331921815872
+        },
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.5165998935699463,
+          "hybrid_score": 0.5574499201774598
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.5349947810173035,
+          "hybrid_score": 0.5412460857629776
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.6132021546363831,
+          "hybrid_score": 0.5199016159772873
+        },
+        {
+          "filename": "README.md",
+          "text": "## Learning objectives\n\nThis project demonstrates the core RAG flow:\n\n1.  Ingest documents.\n2.  Split text into overlapping chunks.\n3.  Generate embeddings.\n4.  Store and retrieve vectors.\n5.  Build context from retrieved passages.\n6.  Generate an answer grounded in that context.\n7.  Evaluate retrieval quality, answer faithfulness, latency, and cost.\n\n------------------------------------------------------------------------\n\n**Project:** AI Architect Portfolio --- Sprint 1\\\n**Component:** Enterprise Knowledge Assistant",
+          "score": 0.42052432894706726,
+          "hybrid_score": 0.37539324671030044
+        }
+      ]
+    },
+    {
+      "id": "RAG-004",
+      "question": "What is the default number of retrieved chunks?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "retrieved chunks",
+        "5"
+      ],
+      "answer": "The default number of retrieved chunks is 5 per question (`TOP_K=5`).",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "### Default Retrieval Configuration\n\nThe default number of retrieved chunks is 5 per question (`TOP_K=5`). The application can use a different number when the request explicitly supplies `top_k`.",
+          "score": 0.7151570916175842,
+          "hybrid_score": 0.7863678187131882
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n`TOP_K`                  Number of retrieved     `5`\n                           chunks\n\n`MAX_UPLOAD_MB`          Maximum upload size in  `15`\n                           MB                      \n  ------------------------------------------------------------------------------\n\nThe environment variable names and defaults should match\n`ai_core/settings.py`.",
+          "score": 0.5039628148078918,
+          "hybrid_score": 0.5279721111059189
+        },
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.4210300147533417,
+          "hybrid_score": 0.41577251106500623
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.37118440866470337,
+          "hybrid_score": 0.3283883064985275
+        },
+        {
+          "filename": "README.md",
+          "text": "### 1. Upload a document\n\nUsing Swagger UI:\n\n1.  Open `/docs`.\n2.  Expand `POST /documents`.\n3.  Click **Try it out**.\n4.  Choose a PDF, DOCX, TXT, or Markdown file.\n5.  Click **Execute**.\n\nOr upload this README from the project root using `curl`:\n\n``` bash\ncurl -X POST http://127.0.0.1:8000/documents \\\n  -F \"file=@README.md\"\n```\n\nA successful response should include the filename, number of chunks\ncreated, and indexing status.",
+          "score": 0.24597181379795074,
+          "hybrid_score": 0.28447886034846304
+        }
+      ]
+    },
+    {
+      "id": "RAG-005",
+      "question": "What is the company's annual revenue?",
+      "expected_answerable": false,
+      "expected_keywords": [],
+      "answer": "The supplied document context does not contain information about the company's annual revenue.",
+      "sources_count": 5,
+      "keyword_check": null,
+      "abstention_detected": true,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Learning objectives\n\nThis project demonstrates the core RAG flow:\n\n1.  Ingest documents.\n2.  Split text into overlapping chunks.\n3.  Generate embeddings.\n4.  Store and retrieve vectors.\n5.  Build context from retrieved passages.\n6.  Generate an answer grounded in that context.\n7.  Evaluate retrieval quality, answer faithfulness, latency, and cost.\n\n------------------------------------------------------------------------\n\n**Project:** AI Architect Portfolio --- Sprint 1\\\n**Component:** Enterprise Knowledge Assistant",
+          "score": 0.18424734473228455,
+          "hybrid_score": 0.1381855085492134
+        },
+        {
+          "filename": "README.md",
+          "text": "## Current limitations and next steps\n\nBefore using this as a production service, add and test:\n\n-   Authentication, authorization, and per-document access controls.\n-   File-content validation and robust upload limits.\n-   Better PDF extraction, OCR for scanned documents, and handling of\n    tables.\n-   Automated evaluation for retrieval relevance and answer grounding.\n-   Structured logging, latency metrics, tracing, and cost monitoring.\n-   Rate limiting, timeouts, retries, and safe error handling.\n-   A scalable vector database/index if the corpus or traffic grows.\n-   Deployment configuration, CI, and security tests.",
+          "score": 0.17972558736801147,
+          "hybrid_score": 0.1347941905260086
+        },
+        {
+          "filename": "README.md",
+          "text": "## Requirements\n\n-   Python 3.10 or newer\n-   An OpenAI API key with API access and available billing/credits\n-   macOS, Linux, or Windows",
+          "score": 0.15171024203300476,
+          "hybrid_score": 0.11378268152475357
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.1474258005619049,
+          "hybrid_score": 0.11056935042142868
+        },
+        {
+          "filename": "README.md",
+          "text": "# Enterprise Knowledge Assistant\n\nA starter Retrieval-Augmented Generation (RAG) application built with\n**FastAPI**, **OpenAI embeddings**, **SQLite**, and **NumPy**. Upload\ndocuments, index their text chunks, and ask questions grounded in\nretrieved passages.",
+          "score": 0.1473197489976883,
+          "hybrid_score": 0.11048981174826622
+        }
+      ]
+    },
+    {
+      "id": "RAG-006",
+      "question": "Which chat completion model does the project use by default?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "gpt-4.1-mini"
+      ],
+      "answer": "The project uses the `gpt-4.1-mini` chat completion model by default.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.5870600938796997,
+          "hybrid_score": 0.6902950704097748
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.45745745301246643,
+          "hybrid_score": 0.5930930897593498
+        },
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.37931448221206665,
+          "hybrid_score": 0.38448586165904997
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.35511285066604614,
+          "hybrid_score": 0.3663346379995346
+        },
+        {
+          "filename": "README.md",
+          "text": "## Learning objectives\n\nThis project demonstrates the core RAG flow:\n\n1.  Ingest documents.\n2.  Split text into overlapping chunks.\n3.  Generate embeddings.\n4.  Store and retrieve vectors.\n5.  Build context from retrieved passages.\n6.  Generate an answer grounded in that context.\n7.  Evaluate retrieval quality, answer faithfulness, latency, and cost.\n\n------------------------------------------------------------------------\n\n**Project:** AI Architect Portfolio --- Sprint 1\\\n**Component:** Enterprise Knowledge Assistant",
+          "score": 0.3676007390022278,
+          "hybrid_score": 0.27570055425167084
+        }
+      ]
+    },
+    {
+      "id": "RAG-007",
+      "question": "How many dimensions are in the default embedding vectors?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "1536"
+      ],
+      "answer": "The default embedding vectors have 1536 dimensions.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.5097364187240601,
+          "hybrid_score": 0.507302314043045
+        },
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.2664962410926819,
+          "hybrid_score": 0.3248721808195114
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.25522324442863464,
+          "hybrid_score": 0.316417433321476
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.3206413686275482,
+          "hybrid_score": 0.3154810264706612
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.3558245301246643,
+          "hybrid_score": 0.3043683975934982
+        }
+      ]
+    },
+    {
+      "id": "RAG-008",
+      "question": "What is the configured text chunk size?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "900"
+      ],
+      "answer": "The configured text chunk size is 900 characters.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.45022469758987427,
+          "hybrid_score": 0.483501856525739
+        },
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.3920062482357025,
+          "hybrid_score": 0.3690046861767769
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n`TOP_K`                  Number of retrieved     `5`\n                           chunks\n\n`MAX_UPLOAD_MB`          Maximum upload size in  `15`\n                           MB                      \n  ------------------------------------------------------------------------------\n\nThe environment variable names and defaults should match\n`ai_core/settings.py`.",
+          "score": 0.4327068328857422,
+          "hybrid_score": 0.3620301246643066
+        },
+        {
+          "filename": "README.md",
+          "text": "### Default Retrieval Configuration\n\nThe default number of retrieved chunks is 5 per question (`TOP_K=5`). The application can use a different number when the request explicitly supplies `top_k`.",
+          "score": 0.46045956015586853,
+          "hybrid_score": 0.3453446701169014
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.32985249161720276,
+          "hybrid_score": 0.3182227020462354
+        }
+      ]
+    },
+    {
+      "id": "RAG-009",
+      "question": "How much overlap is configured between text chunks?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "150"
+      ],
+      "answer": "The configured overlap between text chunks is 150 characters.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.3776564598083496,
+          "hybrid_score": 0.3832423448562622
+        },
+        {
+          "filename": "README.md",
+          "text": "## Default AI Models\n\nThe default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`. It generates 1536-dimensional embedding vectors for document chunks and user questions.\n\nThe default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`. It generates answers using the context retrieved from the SQLite vector store.\n\nThe project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`. Retrieval uses cosine similarity and returns 5 chunks by default (`top_k=5`).",
+          "score": 0.3812674283981323,
+          "hybrid_score": 0.36095057129859925
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.385337769985199,
+          "hybrid_score": 0.31400332748889925
+        },
+        {
+          "filename": "README.md",
+          "text": "### Default Retrieval Configuration\n\nThe default number of retrieved chunks is 5 per question (`TOP_K=5`). The application can use a different number when the request explicitly supplies `top_k`.",
+          "score": 0.3841191530227661,
+          "hybrid_score": 0.3130893647670746
+        },
+        {
+          "filename": "README.md",
+          "text": "## Main RAG Architecture Components\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.\n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.\n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+          "score": 0.3322548270225525,
+          "hybrid_score": 0.29919112026691436
+        }
+      ]
+    },
+    {
+      "id": "RAG-010",
+      "question": "Which document formats can users upload?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "PDF",
+        "DOCX",
+        "TXT",
+        "Markdown"
+      ],
+      "answer": "Users can upload PDF, DOCX, TXT, and Markdown (MD) document formats.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "### 1. Upload a document\n\nUsing Swagger UI:\n\n1.  Open `/docs`.\n2.  Expand `POST /documents`.\n3.  Click **Try it out**.\n4.  Choose a PDF, DOCX, TXT, or Markdown file.\n5.  Click **Execute**.\n\nOr upload this README from the project root using `curl`:\n\n``` bash\ncurl -X POST http://127.0.0.1:8000/documents \\\n  -F \"file=@README.md\"\n```\n\nA successful response should include the filename, number of chunks\ncreated, and indexing status.",
+          "score": 0.498237282037735,
+          "hybrid_score": 0.43367796152830124
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.4300497770309448,
+          "hybrid_score": 0.3825373327732086
+        },
+        {
+          "filename": "README.md",
+          "text": "## Current limitations and next steps\n\nBefore using this as a production service, add and test:\n\n-   Authentication, authorization, and per-document access controls.\n-   File-content validation and robust upload limits.\n-   Better PDF extraction, OCR for scanned documents, and handling of\n    tables.\n-   Automated evaluation for retrieval relevance and answer grounding.\n-   Structured logging, latency metrics, tracing, and cost monitoring.\n-   Rate limiting, timeouts, retries, and safe error handling.\n-   A scalable vector database/index if the corpus or traffic grows.\n-   Deployment configuration, CI, and security tests.",
+          "score": 0.39917251467704773,
+          "hybrid_score": 0.3593793860077858
+        },
+        {
+          "filename": "README.md",
+          "text": "## Architecture\n\n``` text\nDocument (PDF/DOCX/TXT/MD)\n          |\n          v\n  Document Loader\n          |\n          v\n    Text Chunking\n          |\n          v\n  OpenAI Embeddings\n          |\n          v\n SQLite Vector Store\n          |\n          +----------------------+\n                                 |\nQuestion -> Query Embedding -----+\n                                 |\n                                 v\n                      Similarity Search\n                                 |\n                                 v\n                       Retrieved Context\n                                 |\n                                 v\n                       OpenAI Chat Model\n                                 |\n                                 v\n                         Answer + Sources\n```",
+          "score": 0.40561357140541077,
+          "hybrid_score": 0.3342101785540581
+        },
+        {
+          "filename": "README.md",
+          "text": "## API endpoints\n\n  Method   Endpoint       Purpose\n  -------- -------------- ----------------------------------------\n  `GET`    `/health`      Check API status\n  `GET`    `/documents`   List indexed documents and chunk count\n  `POST`   `/documents`   Upload and index a document\n  `POST`   `/ask`         Ask a question using retrieved context",
+          "score": 0.3563472032546997,
+          "hybrid_score": 0.3272604024410248
+        }
+      ]
+    },
+    {
+      "id": "RAG-011",
+      "question": "What is the maximum document upload size?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "15"
+      ],
+      "answer": "The maximum document upload size is 15 MB.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n`TOP_K`                  Number of retrieved     `5`\n                           chunks\n\n`MAX_UPLOAD_MB`          Maximum upload size in  `15`\n                           MB                      \n  ------------------------------------------------------------------------------\n\nThe environment variable names and defaults should match\n`ai_core/settings.py`.",
+          "score": 0.3618447780609131,
+          "hybrid_score": 0.41721691687901813
+        },
+        {
+          "filename": "README.md",
+          "text": "### 1. Upload a document\n\nUsing Swagger UI:\n\n1.  Open `/docs`.\n2.  Expand `POST /documents`.\n3.  Click **Try it out**.\n4.  Choose a PDF, DOCX, TXT, or Markdown file.\n5.  Click **Execute**.\n\nOr upload this README from the project root using `curl`:\n\n``` bash\ncurl -X POST http://127.0.0.1:8000/documents \\\n  -F \"file=@README.md\"\n```\n\nA successful response should include the filename, number of chunks\ncreated, and indexing status.",
+          "score": 0.40136557817459106,
+          "hybrid_score": 0.3760241836309433
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.3032149076461792,
+          "hybrid_score": 0.33574451406796774
+        },
+        {
+          "filename": "README.md",
+          "text": "## Current limitations and next steps\n\nBefore using this as a production service, add and test:\n\n-   Authentication, authorization, and per-document access controls.\n-   File-content validation and robust upload limits.\n-   Better PDF extraction, OCR for scanned documents, and handling of\n    tables.\n-   Automated evaluation for retrieval relevance and answer grounding.\n-   Structured logging, latency metrics, tracing, and cost monitoring.\n-   Rate limiting, timeouts, retries, and safe error handling.\n-   A scalable vector database/index if the corpus or traffic grows.\n-   Deployment configuration, CI, and security tests.",
+          "score": 0.33568236231803894,
+          "hybrid_score": 0.3267617717385292
+        },
+        {
+          "filename": "README.md",
+          "text": "## API endpoints\n\n  Method   Endpoint       Purpose\n  -------- -------------- ----------------------------------------\n  `GET`    `/health`      Check API status\n  `GET`    `/documents`   List indexed documents and chunk count\n  `POST`   `/documents`   Upload and index a document\n  `POST`   `/ask`         Ask a question using retrieved context",
+          "score": 0.24393104016780853,
+          "hybrid_score": 0.2579482801258564
+        }
+      ]
+    },
+    {
+      "id": "RAG-012",
+      "question": "What is the company's annual profit?",
+      "expected_answerable": false,
+      "expected_keywords": [],
+      "answer": "The provided document context does not contain information about the company's annual profit.",
+      "sources_count": 5,
+      "keyword_check": null,
+      "abstention_detected": true,
+      "status": "PASS",
+      "error": null,
+      "sources": [
+        {
+          "filename": "README.md",
+          "text": "## Learning objectives\n\nThis project demonstrates the core RAG flow:\n\n1.  Ingest documents.\n2.  Split text into overlapping chunks.\n3.  Generate embeddings.\n4.  Store and retrieve vectors.\n5.  Build context from retrieved passages.\n6.  Generate an answer grounded in that context.\n7.  Evaluate retrieval quality, answer faithfulness, latency, and cost.\n\n------------------------------------------------------------------------\n\n**Project:** AI Architect Portfolio --- Sprint 1\\\n**Component:** Enterprise Knowledge Assistant",
+          "score": 0.15164877474308014,
+          "hybrid_score": 0.1137365810573101
+        },
+        {
+          "filename": "README.md",
+          "text": "## Current limitations and next steps\n\nBefore using this as a production service, add and test:\n\n-   Authentication, authorization, and per-document access controls.\n-   File-content validation and robust upload limits.\n-   Better PDF extraction, OCR for scanned documents, and handling of\n    tables.\n-   Automated evaluation for retrieval relevance and answer grounding.\n-   Structured logging, latency metrics, tracing, and cost monitoring.\n-   Rate limiting, timeouts, retries, and safe error handling.\n-   A scalable vector database/index if the corpus or traffic grows.\n-   Deployment configuration, CI, and security tests.",
+          "score": 0.13513047993183136,
+          "hybrid_score": 0.10134785994887352
+        },
+        {
+          "filename": "README.md",
+          "text": "## Configuration\n\n------------------------------------------------------------------------------\n  Variable                 Purpose                 Default\n  ------------------------ ----------------------- -----------------------------\n  `OPENAI_API_KEY`         OpenAI API              Required for model calls\n                           authentication\n\n`CHAT_MODEL`             Chat completion model   `gpt-4.1-mini`\n\n`EMBEDDING_MODEL`        Embedding model         `text-embedding-3-small`\n\n`EMBEDDING_DIMENSIONS`   Embedding vector        `1536`\n                           dimensions\n\n`SQLITE_PATH`            SQLite database         `data/vector_store.sqlite3`\n                           location\n\n`CHUNK_SIZE`             Characters per text     `900`\n                           chunk\n\n`CHUNK_OVERLAP`          Overlap between chunks  `150`",
+          "score": 0.12595711648464203,
+          "hybrid_score": 0.09446783736348152
+        },
+        {
+          "filename": "README.md",
+          "text": "## Features\n\n-   REST API documented with Swagger UI.\n-   Document upload for PDF, DOCX, TXT, and Markdown files.\n-   Text chunking with configurable overlap.\n-   Embedding generation using the OpenAI Embeddings API.\n-   Local SQLite storage for document chunks and embedding vectors.\n-   Cosine-similarity retrieval.\n-   Question answering with source information.\n-   Basic health and document-listing endpoints.\n\n> This is a learning and portfolio project. The current SQLite/NumPy\n> vector search is intended for a small local prototype, not a\n> high-scale production deployment.",
+          "score": 0.10829338431358337,
+          "hybrid_score": 0.08122003823518753
+        },
+        {
+          "filename": "README.md",
+          "text": "### 3. Ask a question\n\nIn Swagger UI, expand `POST /ask` and submit:\n\n``` json\n{\n  \"question\": \"What are the main components of this project?\",\n  \"top_k\": 5\n}\n```\n\nOr use `curl`:\n\n``` bash\ncurl -X POST http://127.0.0.1:8000/ask \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"question\":\"What are the main components of this project?\",\"top_k\":5}'\n```\n\nThe API should return an answer and source information from retrieved\nchunks. Actual responses depend on the uploaded document and successful\nOpenAI API access.",
+          "score": 0.1038123145699501,
+          "hybrid_score": 0.07785923592746258
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_dataset_cases": 12,
+    "answerable_passed": 10,
+    "answerable_failed": 0,
+    "answerable_skipped": 0,
+    "unanswerable_passed": 2,
+    "unanswerable_failed": 0,
+    "total_scored": 12,
+    "total_passed": 12,
+    "total_failed": 0,
+    "answerable_keyword_pass_rate": 1.0,
+    "abstention_pass_rate": 1.0,
+    "overall_pass_rate": 1.0
+  },
+  "limitations": "Keyword matching does not prove factual correctness. Phrase-based abstention detection is a heuristic."
+}

@@ -1,0 +1,318 @@
+{
+  "evaluation": "adversarial_semantic_grounding",
+  "judge_model": "gpt-4.1-mini",
+  "total_cases": 18,
+  "completed_cases": 18,
+  "failed_api_or_processing_cases": 0,
+  "correct_verdicts": 18,
+  "incorrect_verdicts": 0,
+  "accuracy": 1.0,
+  "verdict_counts": {
+    "SUPPORTED": 3,
+    "CONTRADICTED": 8,
+    "NOT_ENOUGH_EVIDENCE": 7
+  },
+  "verdict_source_counts": {
+    "llm_judge": 16,
+    "deterministic_policy": 2
+  },
+  "confusion_matrix": {
+    "SUPPORTED": {
+      "SUPPORTED": 3,
+      "CONTRADICTED": 0,
+      "NOT_ENOUGH_EVIDENCE": 0
+    },
+    "CONTRADICTED": {
+      "SUPPORTED": 0,
+      "CONTRADICTED": 8,
+      "NOT_ENOUGH_EVIDENCE": 0
+    },
+    "NOT_ENOUGH_EVIDENCE": {
+      "SUPPORTED": 0,
+      "CONTRADICTED": 0,
+      "NOT_ENOUGH_EVIDENCE": 7
+    }
+  },
+  "classification_metrics": {
+    "SUPPORTED": {
+      "true_positive": 3,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 3
+    },
+    "CONTRADICTED": {
+      "true_positive": 8,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8
+    },
+    "NOT_ENOUGH_EVIDENCE": {
+      "true_positive": 7,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 7
+    }
+  },
+  "results": [
+    {
+      "id": "ADV-001",
+      "question": "Which embedding model does the project use by default?",
+      "answer": "The project uses text-embedding-3-small.",
+      "evidence": "The default embedding model is text-embedding-3-small.",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the default embedding model is text-embedding-3-small, which matches the assistant's answer.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "ADV-002",
+      "question": "Which embedding model does the project use by default?",
+      "answer": "The project uses text-embedding-ada-002.",
+      "evidence": "The default embedding model is text-embedding-3-small.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the default embedding model is text-embedding-ada-002, but the evidence explicitly states the default embedding model is text-embedding-3-small.",
+      "unsupported_claims": [
+        "The project uses text-embedding-ada-002."
+      ]
+    },
+    {
+      "id": "ADV-003",
+      "question": "What is the configured text chunk size?",
+      "answer": "The configured chunk size is 1200 characters.",
+      "evidence": "CHUNK_SIZE is configured as 900 characters.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the chunk size is 1200 characters, but the evidence explicitly states that CHUNK_SIZE is configured as 900 characters.",
+      "unsupported_claims": [
+        "The configured chunk size is 1200 characters."
+      ]
+    },
+    {
+      "id": "ADV-004",
+      "question": "What is the maximum upload size?",
+      "answer": "The maximum upload size is 50 MB.",
+      "evidence": "The maximum document upload size is 15 MB.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum upload size is 50 MB, but the evidence explicitly states the maximum document upload size is 15 MB.",
+      "unsupported_claims": [
+        "The maximum upload size is 50 MB."
+      ]
+    },
+    {
+      "id": "ADV-005",
+      "question": "Which database stores the document chunks?",
+      "answer": "The project stores document chunks in PostgreSQL.",
+      "evidence": "The project stores document chunks and embeddings in SQLite.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims that document chunks are stored in PostgreSQL, but the evidence explicitly states that document chunks and embeddings are stored in SQLite.",
+      "unsupported_claims": [
+        "The project stores document chunks in PostgreSQL."
+      ]
+    },
+    {
+      "id": "ADV-006",
+      "question": "What is the company's annual revenue?",
+      "answer": "The provided documents do not contain the company's annual revenue.",
+      "evidence": "The documents describe the RAG architecture and configuration but do not state company revenue.",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the documents do not contain the company's annual revenue, which supports the assistant's claim.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "ADV-007",
+      "question": "What is the company's annual revenue?",
+      "answer": "The company's annual revenue is ₹500 crore.",
+      "evidence": "The documents describe the RAG architecture but contain no revenue figures.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence explicitly states that the documents contain no revenue figures, so the claim about the company's annual revenue is not supported.",
+      "unsupported_claims": [
+        "The company's annual revenue is ₹500 crore."
+      ]
+    },
+    {
+      "id": "ADV-008",
+      "question": "Which chat model does the project use?",
+      "answer": "The project uses gpt-4.1-mini and was trained on 10 million company documents.",
+      "evidence": "The configured chat model is gpt-4.1-mini.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms that the configured chat model is gpt-4.1-mini, supporting the first part of the answer. However, there is no evidence about the project being trained on 10 million company documents.",
+      "unsupported_claims": [
+        "was trained on 10 million company documents"
+      ]
+    },
+    {
+      "id": "ADV-009",
+      "question": "How many dimensions are in the embedding vectors?",
+      "answer": "The embedding vectors have 1536 dimensions.",
+      "evidence": "The embedding dimensions are configured as 1536.",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the embedding dimensions are configured as 1536, which directly supports the assistant's claim.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "ADV-010",
+      "question": "Which file formats can users upload?",
+      "answer": "Users can upload PDF, DOCX, TXT, Markdown, and executable files.",
+      "evidence": "Supported upload formats are PDF, DOCX, TXT, and Markdown.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim.",
+      "unsupported_claims": [
+        "Users can upload PDF, DOCX, TXT, Markdown, and executable files."
+      ]
+    },
+    {
+      "id": "ADV-011",
+      "question": "Which file formats can users upload?",
+      "answer": "Users can upload executable files.",
+      "evidence": "Supported upload formats are PDF, DOCX, TXT, and Markdown. Executable files are explicitly prohibited.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "ADV-012",
+      "question": "What are the configured chunk size and overlap?",
+      "answer": "The chunk size is 900 characters and the overlap is 150 characters.",
+      "evidence": "CHUNK_SIZE is configured as 900 characters.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chunk size is 900 characters but does not mention the overlap value of 150 characters.",
+      "unsupported_claims": [
+        "The overlap is 150 characters."
+      ]
+    },
+    {
+      "id": "ADV-013",
+      "question": "What is the configured chunk size?",
+      "answer": "The configured chunk size is 900 characters.",
+      "evidence": "The configuration file states a chunk size of 900 characters. The deployment notes state a chunk size of 1200 characters. The current deployed value is not identified.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence shows conflicting chunk sizes: the configuration file states 900 characters, but deployment notes state 1200 characters, and the current deployed value is unknown. Therefore, the assistant's claim that the configured chunk size is 900 characters is not fully supported.",
+      "unsupported_claims": [
+        "The configured chunk size is 900 characters."
+      ]
+    },
+    {
+      "id": "ADV-014",
+      "question": "Which database stores the document chunks?",
+      "answer": "The project does not use SQLite for document storage.",
+      "evidence": "The project stores document chunks and embeddings in SQLite.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims that the project does not use SQLite for document storage, but the evidence explicitly states that the project stores document chunks and embeddings in SQLite.",
+      "unsupported_claims": [
+        "The project does not use SQLite for document storage."
+      ]
+    },
+    {
+      "id": "ADV-015",
+      "question": "What is the maximum document upload size?",
+      "answer": "The maximum document upload size is 15 GB.",
+      "evidence": "The maximum document upload size is 15 MB.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum document upload size is 15 GB, but the evidence explicitly states it is 15 MB.",
+      "unsupported_claims": [
+        "The maximum document upload size is 15 GB."
+      ]
+    },
+    {
+      "id": "ADV-016",
+      "question": "Which chat model does the project use, and how many documents trained it?",
+      "answer": "The project uses gpt-4.1-mini and was trained on 10 million company documents.",
+      "evidence": "The configured chat model is gpt-4.1-mini.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chat model used is gpt-4.1-mini but does not provide any information about the number of documents used for training.",
+      "unsupported_claims": [
+        "was trained on 10 million company documents"
+      ]
+    },
+    {
+      "id": "ADV-017",
+      "question": "How many dimensions are in the embedding vectors?",
+      "answer": "The embedding vectors have 1536 dimensions.",
+      "evidence": "The project stores document chunks in SQLite. The configured chunk size is 900 characters.",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence does not mention the number of dimensions in the embedding vectors, so the assistant's claim cannot be verified.",
+      "unsupported_claims": [
+        "The embedding vectors have 1536 dimensions."
+      ]
+    },
+    {
+      "id": "ADV-018",
+      "question": "What are the chunk size and maximum upload size?",
+      "answer": "The chunk size is 900 characters and the maximum upload size is 50 MB.",
+      "evidence": "CHUNK_SIZE is configured as 900 characters. The maximum document upload size is 15 MB.",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "passed": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant's claim that the maximum upload size is 50 MB contradicts the evidence, which states the maximum document upload size is 15 MB. The chunk size of 900 characters is supported by the evidence.",
+      "unsupported_claims": [
+        "maximum upload size is 50 MB"
+      ]
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Results measure agreement with the hand-labeled test cases.",
+    "LLM judgments can be inconsistent and should be manually reviewed.",
+    "A small adversarial dataset does not establish production reliability.",
+    "Deterministic policy coverage is narrow and should be tested separately."
+  ]
+}

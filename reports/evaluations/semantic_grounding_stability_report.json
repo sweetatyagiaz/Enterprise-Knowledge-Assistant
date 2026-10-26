@@ -1,0 +1,748 @@
+{
+  "evaluation": "semantic_grounding_stability",
+  "timestamp_utc": "2026-10-26T14:49:52.661613+00:00",
+  "judge_model": "gpt-4.1-mini",
+  "repeats": 3,
+  "cases_per_run": 18,
+  "expected_evaluations": 54,
+  "completed_evaluations": 54,
+  "verdict_source_counts": {
+    "llm_judge": 48,
+    "deterministic_policy": 6
+  },
+  "errors": [],
+  "overall_label_accuracy": 1.0,
+  "case_consistency_rate": 1.0,
+  "consistent_cases": 18,
+  "case_count": 18,
+  "case_summaries": [
+    {
+      "id": "ADV-001",
+      "expected_verdict": "SUPPORTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "SUPPORTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "SUPPORTED"
+    },
+    {
+      "id": "ADV-002",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-003",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-004",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-005",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-006",
+      "expected_verdict": "SUPPORTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "SUPPORTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "SUPPORTED"
+    },
+    {
+      "id": "ADV-007",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-008",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-009",
+      "expected_verdict": "SUPPORTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "SUPPORTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "SUPPORTED"
+    },
+    {
+      "id": "ADV-010",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "deterministic_policy": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-011",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "deterministic_policy": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-012",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-013",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-014",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-015",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    },
+    {
+      "id": "ADV-016",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-017",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "NOT_ENOUGH_EVIDENCE": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "NOT_ENOUGH_EVIDENCE"
+    },
+    {
+      "id": "ADV-018",
+      "expected_verdict": "CONTRADICTED",
+      "observed_runs": 3,
+      "verdict_counts": {
+        "CONTRADICTED": 3
+      },
+      "verdict_sources": {
+        "llm_judge": 3
+      },
+      "consistent": true,
+      "modal_verdict": "CONTRADICTED"
+    }
+  ],
+  "results": [
+    {
+      "run": 1,
+      "id": "ADV-001",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the default embedding model is text-embedding-3-small, which matches the assistant's answer."
+    },
+    {
+      "run": 1,
+      "id": "ADV-002",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the default embedding model is text-embedding-ada-002, but the evidence explicitly states the default embedding model is text-embedding-3-small."
+    },
+    {
+      "run": 1,
+      "id": "ADV-003",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the chunk size is 1200 characters, but the evidence explicitly states that CHUNK_SIZE is configured as 900 characters."
+    },
+    {
+      "run": 1,
+      "id": "ADV-004",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum upload size is 50 MB, but the evidence explicitly states the maximum document upload size is 15 MB."
+    },
+    {
+      "run": 1,
+      "id": "ADV-005",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims that document chunks are stored in PostgreSQL, but the evidence explicitly states that document chunks and embeddings are stored in SQLite."
+    },
+    {
+      "run": 1,
+      "id": "ADV-006",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the documents do not contain the company's annual revenue, which supports the assistant's claim."
+    },
+    {
+      "run": 1,
+      "id": "ADV-007",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence explicitly states that the documents contain no revenue figures, so the claim about the company's annual revenue is not supported."
+    },
+    {
+      "run": 1,
+      "id": "ADV-008",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms that the configured chat model is gpt-4.1-mini, supporting the first part of the answer. However, there is no evidence about the training on 10 million company documents, so that claim is unsupported."
+    },
+    {
+      "run": 1,
+      "id": "ADV-009",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the embedding dimensions are configured as 1536, which directly supports the assistant's claim."
+    },
+    {
+      "run": 1,
+      "id": "ADV-010",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 1,
+      "id": "ADV-011",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 1,
+      "id": "ADV-012",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chunk size is 900 characters but does not mention the overlap value of 150 characters."
+    },
+    {
+      "run": 1,
+      "id": "ADV-013",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence shows conflicting information: the configuration file states 900 characters, but deployment notes state 1200 characters, and the current deployed value is unknown. Therefore, the assistant's claim that the configured chunk size is 900 characters is not fully supported."
+    },
+    {
+      "run": 1,
+      "id": "ADV-014",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the project stores document chunks and embeddings in SQLite, which directly contradicts the assistant's claim that SQLite is not used for document storage."
+    },
+    {
+      "run": 1,
+      "id": "ADV-015",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum document upload size is 15 GB, but the evidence explicitly states it is 15 MB."
+    },
+    {
+      "run": 1,
+      "id": "ADV-016",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chat model used is gpt-4.1-mini but does not provide any information about the number of documents used for training."
+    },
+    {
+      "run": 1,
+      "id": "ADV-017",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence does not mention the number of dimensions in the embedding vectors, so the assistant's claim cannot be verified or contradicted."
+    },
+    {
+      "run": 1,
+      "id": "ADV-018",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant's answer states the maximum upload size is 50 MB, but the evidence explicitly states it is 15 MB. The chunk size of 900 characters is supported by the evidence."
+    },
+    {
+      "run": 2,
+      "id": "ADV-001",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the default embedding model is text-embedding-3-small, which matches the assistant's answer."
+    },
+    {
+      "run": 2,
+      "id": "ADV-002",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the default embedding model is text-embedding-ada-002, but the evidence explicitly states the default embedding model is text-embedding-3-small."
+    },
+    {
+      "run": 2,
+      "id": "ADV-003",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the chunk size is 1200 characters, but the evidence explicitly states that CHUNK_SIZE is configured as 900 characters."
+    },
+    {
+      "run": 2,
+      "id": "ADV-004",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum upload size is 50 MB, but the evidence explicitly states the maximum document upload size is 15 MB."
+    },
+    {
+      "run": 2,
+      "id": "ADV-005",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims that document chunks are stored in PostgreSQL, but the evidence explicitly states that document chunks and embeddings are stored in SQLite."
+    },
+    {
+      "run": 2,
+      "id": "ADV-006",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the documents do not contain the company's annual revenue, which supports the assistant's claim."
+    },
+    {
+      "run": 2,
+      "id": "ADV-007",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence explicitly states that the documents contain no revenue figures, so the claim about the company's annual revenue cannot be verified."
+    },
+    {
+      "run": 2,
+      "id": "ADV-008",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms that the configured chat model is gpt-4.1-mini, supporting that part of the answer. However, there is no evidence about the project being trained on 10 million company documents."
+    },
+    {
+      "run": 2,
+      "id": "ADV-009",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the embedding dimensions are configured as 1536, directly supporting the assistant's claim."
+    },
+    {
+      "run": 2,
+      "id": "ADV-010",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 2,
+      "id": "ADV-011",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 2,
+      "id": "ADV-012",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chunk size is 900 characters but does not mention the overlap value of 150 characters."
+    },
+    {
+      "run": 2,
+      "id": "ADV-013",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence shows two different chunk sizes: 900 characters in the configuration file and 1200 characters in the deployment notes, with the current deployed value unknown. Therefore, the assistant's claim that the configured chunk size is 900 characters is not fully supported as it is unclear which value is currently configured."
+    },
+    {
+      "run": 2,
+      "id": "ADV-014",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the project stores document chunks and embeddings in SQLite, which directly contradicts the assistant's claim that SQLite is not used for document storage."
+    },
+    {
+      "run": 2,
+      "id": "ADV-015",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum document upload size is 15 GB, but the evidence explicitly states it is 15 MB."
+    },
+    {
+      "run": 2,
+      "id": "ADV-016",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms that the configured chat model is gpt-4.1-mini, supporting the first part of the answer. However, there is no information about the number of documents used to train the model, so the claim about training on 10 million company documents is unsupported."
+    },
+    {
+      "run": 2,
+      "id": "ADV-017",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence does not mention the number of dimensions in the embedding vectors, so the assistant's claim cannot be verified or contradicted."
+    },
+    {
+      "run": 2,
+      "id": "ADV-018",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant's answer states the maximum upload size is 50 MB, but the evidence explicitly states it is 15 MB. The chunk size of 900 characters is supported."
+    },
+    {
+      "run": 3,
+      "id": "ADV-001",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the default embedding model is text-embedding-3-small, which matches the assistant's answer."
+    },
+    {
+      "run": 3,
+      "id": "ADV-002",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the default embedding model is text-embedding-ada-002, but the evidence explicitly states the default embedding model is text-embedding-3-small."
+    },
+    {
+      "run": 3,
+      "id": "ADV-003",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the chunk size is 1200 characters, but the evidence explicitly states that CHUNK_SIZE is configured as 900 characters."
+    },
+    {
+      "run": 3,
+      "id": "ADV-004",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum upload size is 50 MB, but the evidence explicitly states it is 15 MB."
+    },
+    {
+      "run": 3,
+      "id": "ADV-005",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims document chunks are stored in PostgreSQL, but the evidence explicitly states they are stored in SQLite."
+    },
+    {
+      "run": 3,
+      "id": "ADV-006",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the documents do not contain the company's annual revenue, which supports the assistant's claim."
+    },
+    {
+      "run": 3,
+      "id": "ADV-007",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence explicitly states that the documents contain no revenue figures, so the assistant's claim about the company's annual revenue is not supported."
+    },
+    {
+      "run": 3,
+      "id": "ADV-008",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms that the configured chat model is gpt-4.1-mini, supporting the first part of the answer. However, there is no evidence about the training on 10 million company documents, so that claim is unsupported."
+    },
+    {
+      "run": 3,
+      "id": "ADV-009",
+      "expected_verdict": "SUPPORTED",
+      "actual_verdict": "SUPPORTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence explicitly states that the embedding dimensions are configured as 1536, directly supporting the assistant's claim."
+    },
+    {
+      "run": 3,
+      "id": "ADV-010",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 3,
+      "id": "ADV-011",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "deterministic_policy",
+      "rationale": "Deterministic grounding policy applied to the upload-format claim."
+    },
+    {
+      "run": 3,
+      "id": "ADV-012",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chunk size is 900 characters but does not mention the overlap value of 150 characters."
+    },
+    {
+      "run": 3,
+      "id": "ADV-013",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence shows conflicting chunk sizes: 900 characters in the configuration file and 1200 characters in the deployment notes, with the current deployed value unknown. Therefore, the assistant's claim that the configured chunk size is 900 characters is not fully supported."
+    },
+    {
+      "run": 3,
+      "id": "ADV-014",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims that the project does not use SQLite for document storage, but the evidence explicitly states that the project stores document chunks and embeddings in SQLite."
+    },
+    {
+      "run": 3,
+      "id": "ADV-015",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum document upload size is 15 GB, but the evidence explicitly states it is 15 MB."
+    },
+    {
+      "run": 3,
+      "id": "ADV-016",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The evidence confirms the chat model used is gpt-4.1-mini but does not provide any information about the number of documents used for training."
+    },
+    {
+      "run": 3,
+      "id": "ADV-017",
+      "expected_verdict": "NOT_ENOUGH_EVIDENCE",
+      "actual_verdict": "NOT_ENOUGH_EVIDENCE",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The retrieved evidence does not mention the number of dimensions in the embedding vectors, so the assistant's claim cannot be verified."
+    },
+    {
+      "run": 3,
+      "id": "ADV-018",
+      "expected_verdict": "CONTRADICTED",
+      "actual_verdict": "CONTRADICTED",
+      "correct": true,
+      "verdict_source": "llm_judge",
+      "rationale": "The assistant claims the maximum upload size is 50 MB, but the evidence states it is 15 MB. The chunk size of 900 characters is supported by the evidence."
+    }
+  ],
+  "limitations": [
+    "Repeated identical inputs measure observed verdict stability, not factual correctness.",
+    "A consistent verdict can still be wrong.",
+    "Model behavior may change across model versions or service updates.",
+    "Deterministic policy cases do not measure LLM judge stability."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "dataset": "tests/grounding_adversarial_cases.json",
+  "cases_evaluated": 30,
+  "correct_labels": 30,
+  "label_mismatches": 0,
+  "label_accuracy": 1.0,
+  "false_acceptances": 0,
+  "false_rejections": 0,
+  "mismatches": [],
+  "note": "Results measure agreement with this hand-labeled dataset, not general semantic grounding accuracy."
+}

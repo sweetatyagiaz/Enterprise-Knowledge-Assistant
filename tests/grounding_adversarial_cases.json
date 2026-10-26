@@ -1,0 +1,385 @@
+[
+  {
+    "id": "supported_model",
+    "category": "supported_claim",
+    "claim": "The embedding model is text-embedding-3-small.",
+    "sources": [
+      {
+        "filename": "models.md",
+        "text": "The embedding model is text-embedding-3-small."
+      }
+    ],
+    "expected": "SUPPORTED"
+  },
+  {
+    "id": "wrong_model_role",
+    "category": "wrong_attribution",
+    "claim": "The embedding model is gpt-4.1-mini.",
+    "sources": [
+      {
+        "filename": "architecture.md",
+        "text": "The embedding model is text-embedding-3-small."
+      },
+      {
+        "filename": "configuration.md",
+        "text": "The chat model is gpt-4.1-mini."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_chunk_size",
+    "category": "wrong_attribution",
+    "claim": "CHUNK_SIZE is 150 characters.",
+    "sources": [
+      {
+        "filename": "settings.py",
+        "text": "CHUNK_SIZE is 900 characters."
+      },
+      {
+        "filename": "settings.py",
+        "text": "CHUNK_OVERLAP is 150 characters."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unlinked_dimension",
+    "category": "unsupported_association",
+    "claim": "The text-embedding-3-small model produces 768-dimensional vectors.",
+    "sources": [
+      {
+        "filename": "models.md",
+        "text": "The embedding model is text-embedding-3-small."
+      },
+      {
+        "filename": "architecture.md",
+        "text": "The image encoder produces 768-dimensional vectors."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "invented_accuracy",
+    "category": "unsupported_metric",
+    "claim": "The application achieves 99.9% retrieval accuracy.",
+    "sources": [
+      {
+        "filename": "README.md",
+        "text": "The application uses FastAPI, OpenAI embeddings, SQLite, and a retrieval-augmented generation pipeline."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "negated_fact",
+    "category": "contradiction",
+    "claim": "The project does not use SQLite for document storage.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "The project uses SQLite for document storage."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "supported_negative",
+    "category": "supported_claim",
+    "claim": "The project does not store uploaded files permanently.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "The project does not store uploaded files permanently."
+      }
+    ],
+    "expected": "SUPPORTED"
+  },
+  {
+    "id": "no_evidence",
+    "category": "missing_evidence",
+    "claim": "The application supports 10000 concurrent users.",
+    "sources": [],
+    "expected": "UNCERTAIN"
+  },
+  {
+    "id": "wrong_max_upload_size",
+    "category": "wrong_numeric_value",
+    "claim": "The maximum upload size is 50 MB.",
+    "sources": [
+      {
+        "filename": "settings.md",
+        "text": "The maximum upload size is 15 MB."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_chunk_overlap",
+    "category": "wrong_attribution",
+    "claim": "CHUNK_OVERLAP is 900 characters.",
+    "sources": [
+      {
+        "filename": "settings.py",
+        "text": "CHUNK_SIZE is 900 characters."
+      },
+      {
+        "filename": "settings.py",
+        "text": "CHUNK_OVERLAP is 150 characters."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unsupported_csv_upload",
+    "category": "unsupported_capability",
+    "claim": "Users can upload PDF, DOCX, TXT, Markdown, and CSV documents.",
+    "sources": [
+      {
+        "filename": "uploads.md",
+        "text": "Document upload supports PDF, DOCX, TXT, and Markdown files."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_database_path",
+    "category": "wrong_attribution",
+    "claim": "The SQLite database is stored at data/production.sqlite3.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "The SQLite database is stored at data/vector_store.sqlite3."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_embedding_dimensions",
+    "category": "wrong_numeric_value",
+    "claim": "The default embedding model produces 999 dimensions.",
+    "sources": [
+      {
+        "filename": "models.md",
+        "text": "The default embedding model produces 1536 dimensions."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_model_version",
+    "category": "wrong_attribution",
+    "claim": "The default embedding model is text-embedding-3-large.",
+    "sources": [
+      {
+        "filename": "models.md",
+        "text": "The default embedding model is text-embedding-3-small."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unsupported_concurrency",
+    "category": "missing_evidence",
+    "claim": "The application supports 10000 concurrent users.",
+    "sources": [
+      {
+        "filename": "README.md",
+        "text": "The application uses FastAPI and SQLite."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_chat_model_role",
+    "category": "wrong_attribution",
+    "claim": "The chat model is text-embedding-3-small.",
+    "sources": [
+      {
+        "filename": "models.md",
+        "text": "The embedding model is text-embedding-3-small. The chat model is gpt-4.1-mini."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_negated_storage_claim",
+    "category": "contradiction",
+    "claim": "The project does not use SQLite for document storage.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "The project uses SQLite for document storage."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unsupported_accuracy_with_matching_terms",
+    "category": "unsupported_metric",
+    "claim": "The retrieval pipeline achieves 99.9% accuracy.",
+    "sources": [
+      {
+        "filename": "evaluation.md",
+        "text": "The retrieval pipeline searches document chunks using similarity scores."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_minimum_qualification",
+    "category": "qualification",
+    "claim": "The system supports at least 100 concurrent users.",
+    "sources": [
+      {
+        "filename": "capacity.md",
+        "text": "The system supports up to 100 concurrent users."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_maximum_qualification",
+    "category": "qualification",
+    "claim": "The system supports up to 100 concurrent users.",
+    "sources": [
+      {
+        "filename": "capacity.md",
+        "text": "The system supports at least 100 concurrent users."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "only_qualification_missing",
+    "category": "qualification",
+    "claim": "Only PDF files can be uploaded.",
+    "sources": [
+      {
+        "filename": "uploads.md",
+        "text": "PDF files can be uploaded."
+      }
+    ],
+    "expected": "UNCERTAIN"
+  },
+  {
+    "id": "unsupported_only_qualification",
+    "category": "qualification",
+    "claim": "Only PDF files can be uploaded.",
+    "sources": [
+      {
+        "filename": "uploads.md",
+        "text": "PDF, DOCX, and TXT files can be uploaded."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "conflicting_chunk_size_sources",
+    "category": "conflicting_sources",
+    "claim": "CHUNK_SIZE is 900 characters.",
+    "sources": [
+      {
+        "filename": "old_settings.md",
+        "text": "CHUNK_SIZE is 700 characters."
+      },
+      {
+        "filename": "current_settings.md",
+        "text": "CHUNK_SIZE is 900 characters."
+      }
+    ],
+    "expected": "UNCERTAIN"
+  },
+  {
+    "id": "outdated_model_version",
+    "category": "conflicting_sources",
+    "claim": "The current embedding model is text-embedding-3-small.",
+    "sources": [
+      {
+        "filename": "old_config.md",
+        "text": "The embedding model is text-embedding-ada-002."
+      },
+      {
+        "filename": "current_config.md",
+        "text": "The embedding model is text-embedding-3-small."
+      }
+    ],
+    "expected": "UNCERTAIN"
+  },
+  {
+    "id": "unsupported_retention_period",
+    "category": "missing_evidence",
+    "claim": "Uploaded documents are retained for 90 days.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "Uploaded documents are processed by the ingestion pipeline."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unsupported_encryption_claim",
+    "category": "missing_evidence",
+    "claim": "All stored documents are encrypted with AES-256.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "Document chunks are stored in SQLite."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unrelated_database_and_model",
+    "category": "unsupported_association",
+    "claim": "SQLite uses text-embedding-3-small to store document vectors.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "SQLite stores document chunks."
+      },
+      {
+        "filename": "models.md",
+        "text": "The embedding model is text-embedding-3-small."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "wrong_database_engine",
+    "category": "wrong_attribution",
+    "claim": "PostgreSQL stores document chunks.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "SQLite stores document chunks."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "unsupported_latency_claim",
+    "category": "unsupported_metric",
+    "claim": "The retrieval pipeline responds in under 50 milliseconds.",
+    "sources": [
+      {
+        "filename": "performance.md",
+        "text": "The retrieval pipeline searches document chunks using similarity scores."
+      }
+    ],
+    "expected": "UNSUPPORTED"
+  },
+  {
+    "id": "supported_database_fact",
+    "category": "supported_claim",
+    "claim": "SQLite stores document chunks.",
+    "sources": [
+      {
+        "filename": "storage.md",
+        "text": "SQLite stores document chunks."
+      }
+    ],
+    "expected": "SUPPORTED"
+  }
+]

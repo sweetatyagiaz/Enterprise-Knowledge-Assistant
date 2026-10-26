@@ -1,0 +1,195 @@
+{
+  "timestamp_utc": "2026-10-25T05:52:53.648858+00:00",
+  "api_url": "http://127.0.0.1:8000/ask",
+  "dataset": "tests/data/rag_eval.json",
+  "results": [
+    {
+      "id": "RAG-001",
+      "question": "What are the main components of this project's RAG architecture?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "Document Loader",
+        "Text Chunking",
+        "OpenAI Embeddings",
+        "SQLite Vector Store",
+        "Similarity Search",
+        "OpenAI Chat Model"
+      ],
+      "answer": "The main components of this project's RAG architecture are:\n\n1. Document Loader: Extracts text from PDF, DOCX, TXT, and Markdown documents.  \n2. Text Chunking: Splits document text into smaller, overlapping chunks.  \n3. OpenAI Embeddings: Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.  \n4. SQLite Vector Store: Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.  \n5. Similarity Search: Uses cosine similarity to retrieve the most relevant document chunks for a user question.  \n6. Retrieved Context: Combines retrieved passages to provide context for answering the question.  \n7. OpenAI Chat Model: Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.  \n8. FastAPI: Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-002",
+      "question": "Which embedding model does the project use by default?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "text-embedding-3-small"
+      ],
+      "answer": "The project uses the `text-embedding-3-small` embedding model by default.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-003",
+      "question": "Which database stores the document chunks and embeddings?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "sqlite"
+      ],
+      "answer": "The document chunks and embedding vectors are stored in a local SQLite database at `data/vector_store.sqlite3`.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-004",
+      "question": "What is the default number of retrieved chunks?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "retrieved chunks",
+        "5"
+      ],
+      "answer": "The default number of retrieved chunks is 5 per question (`TOP_K=5`).",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-005",
+      "question": "What is the company's annual revenue?",
+      "expected_answerable": false,
+      "expected_keywords": [],
+      "answer": "The provided document context does not contain information about the company's annual revenue.",
+      "sources_count": 5,
+      "keyword_check": null,
+      "abstention_detected": true,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-006",
+      "question": "Which chat completion model does the project use by default?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "gpt-4.1-mini"
+      ],
+      "answer": "The project uses the `gpt-4.1-mini` chat completion model by default.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-007",
+      "question": "How many dimensions are in the default embedding vectors?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "1536"
+      ],
+      "answer": "The default embedding vectors have 1536 dimensions.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-008",
+      "question": "What is the configured text chunk size?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "900"
+      ],
+      "answer": "The configured text chunk size is 900 characters.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-009",
+      "question": "How much overlap is configured between text chunks?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "150"
+      ],
+      "answer": "The configured overlap between text chunks is 150 characters.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-010",
+      "question": "Which document formats can users upload?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "PDF",
+        "DOCX",
+        "TXT",
+        "Markdown"
+      ],
+      "answer": "Users can upload PDF, DOCX, TXT, and Markdown file formats.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-011",
+      "question": "What is the maximum document upload size?",
+      "expected_answerable": true,
+      "expected_keywords": [
+        "15"
+      ],
+      "answer": "The maximum document upload size is 15 MB.",
+      "sources_count": 5,
+      "keyword_check": true,
+      "abstention_detected": null,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "id": "RAG-012",
+      "question": "What is the company's annual profit?",
+      "expected_answerable": false,
+      "expected_keywords": [],
+      "answer": "The provided document context does not contain information about the company's annual profit.",
+      "sources_count": 5,
+      "keyword_check": null,
+      "abstention_detected": true,
+      "status": "PASS",
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_dataset_cases": 12,
+    "answerable_passed": 10,
+    "answerable_failed": 0,
+    "answerable_skipped": 0,
+    "unanswerable_passed": 2,
+    "unanswerable_failed": 0,
+    "total_scored": 12,
+    "total_passed": 12,
+    "total_failed": 0,
+    "answerable_keyword_pass_rate": 1.0,
+    "abstention_pass_rate": 1.0,
+    "overall_pass_rate": 1.0
+  },
+  "limitations": "Keyword matching does not prove factual correctness. Phrase-based abstention detection is a heuristic."
+}

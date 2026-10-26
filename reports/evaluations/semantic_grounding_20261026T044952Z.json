@@ -1,0 +1,408 @@
+{
+  "evaluation": "semantic_grounding",
+  "timestamp_utc": "20261026T044952Z",
+  "judge_model": "gpt-4.1-mini",
+  "dataset_path": "tests/data/rag_eval.json",
+  "total_cases": 12,
+  "completed_cases": 12,
+  "failed_cases": 0,
+  "verdict_counts": {
+    "CONTRADICTED": 0,
+    "NOT_ENOUGH_EVIDENCE": 0,
+    "SUPPORTED": 12
+  },
+  "supported_rate": 1.0,
+  "results": [
+    {
+      "id": "RAG-001",
+      "question": "What are the main components of this project's RAG architecture?",
+      "answerable_expected": true,
+      "answer": "The main components of this project's Retrieval-Augmented Generation (RAG) architecture are:\n\n1. **Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents.  \n2. **Text Chunking:** Splits document text into smaller, overlapping chunks.  \n3. **OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.  \n4. **SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.  \n5. **Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question.  \n6. **Retrieved Context:** Combines retrieved passages to provide context for answering the question.  \n7. **OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.  \n8. **FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.5759838223457336
+        },
+        {
+          "filename": "README.md",
+          "score": 0.5415767431259155
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4024571478366852
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4318245053291321
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3030321002006531
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The assistant's answer lists the main components of the project's RAG architecture exactly as described in the retrieved evidence from source 1, including document loader, text chunking, OpenAI embeddings with the specified model, SQLite vector store, similarity search using cosine similarity, retrieved context, OpenAI chat model with the specified model, and FastAPI endpoints.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-002",
+      "question": "Which embedding model does the project use by default?",
+      "answerable_expected": true,
+      "answer": "The project uses the `text-embedding-3-small` embedding model by default.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.6491242051124573
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4290522038936615
+        },
+        {
+          "filename": "README.md",
+          "score": 0.37651148438453674
+        },
+        {
+          "filename": "README.md",
+          "score": 0.45580562949180603
+        },
+        {
+          "filename": "README.md",
+          "score": 0.26832738518714905
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "Multiple pieces of evidence explicitly state that the default embedding model used by the project is `text-embedding-3-small`. This is confirmed in the default AI models section, configuration variables, main architecture components, and environment variable setup.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-003",
+      "question": "Which database stores the document chunks and embeddings?",
+      "answerable_expected": true,
+      "answer": "The document chunks and embedding vectors are stored in an SQLite database located at `data/vector_store.sqlite3`.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.621510922908783
+        },
+        {
+          "filename": "README.md",
+          "score": 0.5165998935699463
+        },
+        {
+          "filename": "README.md",
+          "score": 0.5349947810173035
+        },
+        {
+          "filename": "README.md",
+          "score": 0.6132021546363831
+        },
+        {
+          "filename": "README.md",
+          "score": 0.42052432894706726
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "Multiple pieces of evidence (sources 1, 2, and 3) explicitly state that document chunks and embedding vectors are stored in an SQLite database located at `data/vector_store.sqlite3`.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-004",
+      "question": "What is the default number of retrieved chunks?",
+      "answerable_expected": true,
+      "answer": "The default number of retrieved chunks is 5.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.7151570916175842
+        },
+        {
+          "filename": "README.md",
+          "score": 0.5039628148078918
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4210300147533417
+        },
+        {
+          "filename": "README.md",
+          "score": 0.37118440866470337
+        },
+        {
+          "filename": "README.md",
+          "score": 0.24597181379795074
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "Multiple pieces of evidence explicitly state that the default number of retrieved chunks is 5 (e.g., 'The default number of retrieved chunks is 5 per question (TOP_K=5)' and 'Retrieval uses cosine similarity and returns 5 chunks by default (top_k=5)').",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-005",
+      "question": "What is the company's annual revenue?",
+      "answerable_expected": false,
+      "answer": "The provided document context does not contain information about the company's annual revenue.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.18424734473228455
+        },
+        {
+          "filename": "README.md",
+          "score": 0.17972558736801147
+        },
+        {
+          "filename": "README.md",
+          "score": 0.15171024203300476
+        },
+        {
+          "filename": "README.md",
+          "score": 0.1474258005619049
+        },
+        {
+          "filename": "README.md",
+          "score": 0.1473197489976883
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The retrieved evidence contains no information about the company's annual revenue, so the assistant's statement that the document context does not contain this information is accurate.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-006",
+      "question": "Which chat completion model does the project use by default?",
+      "answerable_expected": true,
+      "answer": "The project uses the `gpt-4.1-mini` chat completion model by default.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.5870600938796997
+        },
+        {
+          "filename": "README.md",
+          "score": 0.45745745301246643
+        },
+        {
+          "filename": "README.md",
+          "score": 0.37931448221206665
+        },
+        {
+          "filename": "README.md",
+          "score": 0.35511285066604614
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3676007390022278
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "Multiple pieces of evidence (sources 1, 2, and 3) explicitly state that the default chat completion model used by the project is `gpt-4.1-mini`.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-007",
+      "question": "How many dimensions are in the default embedding vectors?",
+      "answerable_expected": true,
+      "answer": "The default embedding vectors have 1536 dimensions.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.5097364187240601
+        },
+        {
+          "filename": "README.md",
+          "score": 0.2664962410926819
+        },
+        {
+          "filename": "README.md",
+          "score": 0.25522324442863464
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3206413686275482
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3558245301246643
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "Multiple pieces of evidence explicitly state that the default embedding vectors have 1536 dimensions, including configuration details and model descriptions.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-008",
+      "question": "What is the configured text chunk size?",
+      "answerable_expected": true,
+      "answer": "The configured text chunk size is 900 characters.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.45022469758987427
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3920062482357025
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4327068328857422
+        },
+        {
+          "filename": "README.md",
+          "score": 0.46045956015586853
+        },
+        {
+          "filename": "README.md",
+          "score": 0.32985249161720276
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The evidence from source 1 explicitly states that the configuration variable `CHUNK_SIZE` is set to 900 characters per text chunk, directly supporting the assistant's answer.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-009",
+      "question": "How much overlap is configured between text chunks?",
+      "answerable_expected": true,
+      "answer": "The configured overlap between text chunks is 150 characters.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.3776564598083496
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3812674283981323
+        },
+        {
+          "filename": "README.md",
+          "score": 0.385337769985199
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3841191530227661
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3322548270225525
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The evidence from the configuration section explicitly states that the overlap between chunks (CHUNK_OVERLAP) is set to 150 characters, directly supporting the assistant's answer.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-010",
+      "question": "Which document formats can users upload?",
+      "answerable_expected": true,
+      "answer": "Users can upload PDF, DOCX, TXT, and Markdown files.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.498237282037735
+        },
+        {
+          "filename": "README.md",
+          "score": 0.4300497770309448
+        },
+        {
+          "filename": "README.md",
+          "score": 0.39917251467704773
+        },
+        {
+          "filename": "README.md",
+          "score": 0.40561357140541077
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3563472032546997
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The evidence explicitly states in multiple places (source 1 and source 2) that users can upload PDF, DOCX, TXT, and Markdown files. The assistant's answer matches this information exactly.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-011",
+      "question": "What is the maximum document upload size?",
+      "answerable_expected": true,
+      "answer": "The maximum document upload size is 15 MB.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.3618447780609131
+        },
+        {
+          "filename": "README.md",
+          "score": 0.40136557817459106
+        },
+        {
+          "filename": "README.md",
+          "score": 0.3032149076461792
+        },
+        {
+          "filename": "README.md",
+          "score": 0.33568236231803894
+        },
+        {
+          "filename": "README.md",
+          "score": 0.24393104016780853
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The evidence from source 1 explicitly states that the maximum upload size is 15 MB, matching the assistant's answer.",
+      "unsupported_claims": []
+    },
+    {
+      "id": "RAG-012",
+      "question": "What is the company's annual profit?",
+      "answerable_expected": false,
+      "answer": "The provided document context does not contain information about the company's annual profit.",
+      "source_count": 5,
+      "sources": [
+        {
+          "filename": "README.md",
+          "score": 0.15164877474308014
+        },
+        {
+          "filename": "README.md",
+          "score": 0.13513047993183136
+        },
+        {
+          "filename": "README.md",
+          "score": 0.12595711648464203
+        },
+        {
+          "filename": "README.md",
+          "score": 0.10829338431358337
+        },
+        {
+          "filename": "README.md",
+          "score": 0.1038123145699501
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "rationale": "The retrieved evidence contains no information about the company's annual profit. The assistant correctly states that the provided document context does not contain this information.",
+      "unsupported_claims": []
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "This is an LLM-as-judge evaluation, not a formal proof of factual correctness.",
+    "Judge decisions may be inconsistent or biased.",
+    "Results should be reviewed against manually labeled examples.",
+    "The supported rate is the fraction of completed cases judged SUPPORTED; it is not an overall accuracy score."
+  ]
+}

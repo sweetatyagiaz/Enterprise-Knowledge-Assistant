@@ -1,0 +1,334 @@
+
+from types import SimpleNamespace
+
+import pytest
+
+from ai_core.chunking import chunk_text
+from ai_core.ingestion.loaders import load_document
+from ai_core.rag import KnowledgeAssistant
+from ai_core.vector_store import VectorStore
+
+
+# --------------------------------------------------
+# Test 1: Text chunking
+# --------------------------------------------------
+
+def test_chunk_text_creates_overlapping_chunks():
+    text = "abcdefghij"
+
+    chunks = chunk_text(
+        text,
+        chunk_size=6,
+        chunk_overlap=2,
+    )
+
+    assert chunks == ["abcdef", "efghij"]
+
+
+def test_chunk_text_rejects_invalid_overlap():
+    with pytest.raises(ValueError):
+        chunk_text(
+            "Sample text",
+            chunk_size=10,
+            chunk_overlap=10,
+        )
+
+
+def test_chunk_text_handles_empty_input():
+    assert chunk_text("   ") == []
+
+
+# --------------------------------------------------
+# Test 2: Document ingestion
+# --------------------------------------------------
+
+def test_markdown_loader_extracts_text():
+    content = b"# RAG Project\n\nThis project uses embeddings."
+
+    result = load_document("README.md", content)
+
+    assert "RAG Project" in result
+    assert "embeddings" in result
+
+
+def test_loader_rejects_unsupported_file():
+    with pytest.raises(ValueError):
+        load_document("document.exe", b"test")
+
+
+def test_loader_rejects_empty_content():
+    with pytest.raises(ValueError):
+        load_document("README.md", b"")
+
+
+# --------------------------------------------------
+# Test 3: Vector retrieval
+# --------------------------------------------------
+
+def test_vector_store_returns_most_similar_chunk(
+    tmp_path,
+    monkeypatch,
+):
+    database_path = tmp_path / "test_vectors.sqlite3"
+
+    monkeypatch.setattr(
+        "ai_core.vector_store.get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    store = VectorStore()
+
+    store.add_document(
+        filename="test.txt",
+        chunks=[
+            "The capital of France is Paris.",
+            "Python is a programming language.",
+        ],
+        embeddings=[
+            [1.0, 0.0],
+            [0.0, 1.0],
+        ],
+    )
+
+    results = store.search(
+        query_vector=[1.0, 0.0],
+        top_k=2,
+    )
+
+    assert len(results) == 2
+    assert "Paris" in results[0]["text"]
+    assert results[0]["score"] == pytest.approx(1.0)
+
+
+# --------------------------------------------------
+# Test 4: RAG answer generation
+# --------------------------------------------------
+
+def test_rag_uses_retrieved_context(monkeypatch):
+    captured_messages = []
+
+    class FakeOpenAI:
+        def __init__(self, api_key):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=self.create_completion
+                )
+            )
+
+        def create_completion(self, **kwargs):
+            captured_messages.extend(kwargs["messages"])
+
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(
+                            content="The capital of France is Paris."
+                        )
+                    )
+                ]
+            )
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+
+    assistant = object.__new__(KnowledgeAssistant)
+
+    assistant.settings = SimpleNamespace(
+        openai_api_key="test-key",
+        chat_model="mock-model",
+        top_k=5,
+    )
+
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: [
+            {
+                "filename": "geography.txt",
+                "text": "The capital of France is Paris.",
+                "score": 1.0,
+            }
+        ]
+    )
+
+    result = assistant.ask(
+        "What is the capital of France?"
+    )
+
+    assert "Paris" in result["answer"]
+    assert result["sources"][0]["filename"] == "geography.txt"
+
+    # Confirm retrieved context was sent to the model.
+    user_message = next(
+        message["content"]
+        for message in captured_messages
+        if message["role"] == "user"
+    )
+
+    assert "The capital of France is Paris." in user_message
+
+
+def test_rag_handles_no_retrieved_results():
+    assistant = object.__new__(KnowledgeAssistant)
+
+    assistant.settings = SimpleNamespace(top_k=5)
+
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: []
+    )
+
+    result = assistant.ask("What is the capital of France?")
+
+    assert result["sources"] == []
+    assert "could not find relevant information" in (
+        result["answer"].lower()
+    )
+
+
+def test_rag_does_not_invent_answer_from_irrelevant_context(monkeypatch):
+    """Verify the model is instructed not to invent unsupported facts."""
+    captured_messages = []
+
+    class FakeOpenAI:
+        def __init__(self, api_key):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=self.create_completion
+                )
+            )
+
+        def create_completion(self, **kwargs):
+            captured_messages.extend(kwargs["messages"])
+
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(
+                            content=(
+                                "I could not find relevant information "
+                                "to answer this question."
+                            )
+                        )
+                    )
+                ]
+            )
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        openai_api_key="test-key",
+        chat_model="mock-model",
+        top_k=5,
+    )
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: [
+            {
+                "filename": "unrelated.txt",
+                "text": "Aurora Analytics has a default retention period of 90 days.",
+                "score": 0.3,
+            }
+        ]
+    )
+
+    result = assistant.ask("What is the company's annual revenue?")
+
+    assert result["sources"]
+    assert "could not find relevant information" in result["answer"].lower()
+
+    system_message = next(
+        message["content"]
+        for message in captured_messages
+        if message["role"] == "system"
+    )
+    assert "do not invent" in system_message.lower()
+
+def test_markdown_chunking_preserves_heading_with_content():
+    text = (
+        "# Architecture\n\n"
+        "The system uses embeddings and a vector store.\n\n"
+        "# Deployment\n\n"
+        "The API runs with FastAPI."
+    )
+
+    chunks = chunk_text(text, chunk_size=100, chunk_overlap=10)
+
+    assert any(
+        "# Architecture" in chunk
+        and "embeddings and a vector store" in chunk
+        for chunk in chunks
+    )
+
+    assert any(
+        "# Deployment" in chunk
+        and "FastAPI" in chunk
+        for chunk in chunks
+    )
+
+
+def test_markdown_chunking_respects_maximum_size():
+    text = "# Details\n\n" + ("word " * 500)
+
+    chunks = chunk_text(text, chunk_size=200, chunk_overlap=30)
+
+    assert chunks
+    assert all(len(chunk) <= 200 for chunk in chunks)
+
+
+def test_markdown_chunking_preserves_all_sections():
+    text = (
+        "# A\n\nContent alpha.\n\n"
+        "# B\n\nContent beta.\n\n"
+        "# C\n\nContent gamma."
+    )
+
+    chunks = chunk_text(text, chunk_size=60, chunk_overlap=10)
+    combined = "\n".join(chunks)
+
+    assert "Content alpha" in combined
+    assert "Content beta" in combined
+    assert "Content gamma" in combined
+
+
+
+def test_architecture_chunk_contains_component_descriptions():
+    from pathlib import Path
+
+    from ai_core.chunking import chunk_text
+
+    readme = Path("README.md").read_text(encoding="utf-8")
+    chunks = chunk_text(readme, chunk_size=900, chunk_overlap=150)
+
+    architecture_chunks = [
+        chunk
+        for chunk in chunks
+        if "Main RAG Architecture Components" in chunk
+    ]
+
+    assert architecture_chunks, "Architecture section was not chunked."
+
+    component_chunk = next(
+        (
+            chunk
+            for chunk in architecture_chunks
+            if "Document Loader" in chunk and "FastAPI" in chunk
+        ),
+        None,
+    )
+
+    assert component_chunk is not None, (
+        "Expected a chunk containing the architecture component descriptions."
+    )
+    assert len(component_chunk) <= 900
+
+
+
+

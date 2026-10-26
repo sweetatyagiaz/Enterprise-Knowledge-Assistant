@@ -1,0 +1,820 @@
+{
+  "timestamp_utc": "2026-10-26T15:00:37.766457+00:00",
+  "input_report": "reports/evaluations/live_api_evaluation_20261025T084500Z.json",
+  "reference_dataset": "tests/data/rag_eval.json",
+  "method": "Keyword-based retrieval and answer checks combined with the existing local lexical grounding evaluator.",
+  "limitations": [
+    "Keyword coverage is not semantic relevance or correctness.",
+    "Expected-source hits do not prove a retrieved passage is relevant.",
+    "Retrieval scores are diagnostics, not calibrated probabilities.",
+    "Abstention markers do not prove that abstention was warranted.",
+    "Grounding labels use a local lexical heuristic, not semantic entailment.",
+    "Answer keyword checks may miss correct paraphrases."
+  ],
+  "summary": {
+    "cases_evaluated": 12,
+    "cases_missing_reference": [],
+    "answerable_cases": 10,
+    "unanswerable_cases": 2,
+    "retrieval": {
+      "expected_source_hit_rate": 1.0,
+      "all_keywords_in_top1_rate": 1.0,
+      "all_keywords_in_topk_rate": 1.0
+    },
+    "answer_checks": {
+      "answerable_keyword_check_pass_rate": 1.0,
+      "unanswerable_abstention_rate": 1.0
+    },
+    "grounding_claims": {
+      "claim_count": 17,
+      "supported": 17,
+      "unsupported": 0,
+      "uncertain": 0,
+      "supported_rate": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "RAG-001",
+      "question": "What are the main components of this project's RAG architecture?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The main components of this project's RAG architecture are:\n\n1. Document Loader: Extracts text from PDF, DOCX, TXT, and Markdown documents.\n2. Text Chunking: Splits document text into smaller, overlapping chunks.\n3. OpenAI Embeddings: Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.\n4. SQLite Vector Store: Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.\n5. Similarity Search: Uses cosine similarity to retrieve the most relevant document chunks for a user question.\n6. Retrieved Context: Combines retrieved passages to provide context for answering the question.\n7. OpenAI Chat Model: Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.\n8. FastAPI: Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.5853212000926336,
+          0.43618255734443667,
+          0.3618428608775139,
+          0.3538683789968491,
+          0.32060740848382313
+        ],
+        "top_ranked_score": 0.5853212000926336
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "Document Loader",
+          "Text Chunking",
+          "OpenAI Embeddings",
+          "SQLite Vector Store",
+          "Similarity Search",
+          "OpenAI Chat Model"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-001",
+        "question": "What are the main components of this project's RAG architecture?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "Document Loader: Extracts text from PDF, DOCX, TXT, and Markdown documents.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**Document Loader:** Extracts text from PDF, DOCX, TXT, and Markdown documents."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "Text Chunking: Splits document text into smaller, overlapping chunks.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**Text Chunking:** Splits document text into smaller, overlapping chunks."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "OpenAI Embeddings: Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**OpenAI Embeddings:** Uses the `text-embedding-3-small` embedding model by default to convert text into 1536-dimensional vectors."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "SQLite Vector Store: Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**SQLite Vector Store:** Stores document chunks and their embedding vectors in `data/vector_store.sqlite3`."
+            },
+            "missing_numbers": [],
+            "reason": "Claim matches a recognized, specific fact in the evidence snippet."
+          },
+          {
+            "claim": "Similarity Search: Uses cosine similarity to retrieve the most relevant document chunks for a user question.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**Similarity Search:** Uses cosine similarity to retrieve the most relevant document chunks for a user question."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "Retrieved Context: Combines retrieved passages to provide context for answering the question.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**Retrieved Context:** Combines retrieved passages to provide context for answering the question."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "OpenAI Chat Model: Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**OpenAI Chat Model:** Uses `gpt-4.1-mini` by default to generate answers grounded in the retrieved context."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          },
+          {
+            "claim": "FastAPI: Exposes endpoints for document ingestion, document listing, health checks, and question answering.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "**FastAPI:** Exposes endpoints for document ingestion, document listing, health checks, and question answering."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 8,
+          "supported": 8,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-002",
+      "question": "Which embedding model does the project use by default?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The project uses the `text-embedding-3-small` embedding model by default.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.736843153834343,
+          0.5717891529202461,
+          0.5323836132884026,
+          0.49185422211885454,
+          0.4512455388903618
+        ],
+        "top_ranked_score": 0.736843153834343
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "text-embedding-3-small"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-002",
+        "question": "Which embedding model does the project use by default?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The project uses the `text-embedding-3-small` embedding model by default.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "The default embedding model is `text-embedding-3-small`, configured through `EMBEDDING_MODEL`."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-003",
+      "question": "Which database stores the document chunks and embeddings?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The document chunks and embedding vectors are stored in a local SQLite database located at `data/vector_store.sqlite3`.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.6061331921815872,
+          0.5574499201774598,
+          0.5412460857629776,
+          0.5199016159772873,
+          0.37539324671030044
+        ],
+        "top_ranked_score": 0.6061331921815872
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "sqlite"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-003",
+        "question": "Which database stores the document chunks and embeddings?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The document chunks and embedding vectors are stored in a local SQLite database located at `data/vector_store.sqlite3`.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 0.636,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "The project stores document chunks and embedding vectors in SQLite at `data/vector_store.sqlite3`."
+            },
+            "missing_numbers": [],
+            "reason": "Claim matches a recognized, specific fact in the evidence snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-004",
+      "question": "What is the default number of retrieved chunks?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The default number of retrieved chunks is 5 per question.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.7863678187131882,
+          0.5279721111059189,
+          0.41577251106500623,
+          0.3283883064985275,
+          0.28447886034846304
+        ],
+        "top_ranked_score": 0.7863678187131882
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "retrieved chunks",
+          "5"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-004",
+        "question": "What is the default number of retrieved chunks?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The default number of retrieved chunks is 5 per question.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "The default number of retrieved chunks is 5 per question (`TOP_K=5`)."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-005",
+      "question": "What is the company's annual revenue?",
+      "answerable": false,
+      "status": "PASS",
+      "answer": "The provided document context does not contain information about the company's annual revenue.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": null,
+        "expected_source_found": null,
+        "top1_keyword_coverage": null,
+        "topk_keyword_coverage": null,
+        "all_keywords_in_top1": null,
+        "all_keywords_in_topk": null,
+        "ranked_scores": [
+          0.1381855085492134,
+          0.1347941905260086,
+          0.11378268152475357,
+          0.11056935042142868,
+          0.11048981174826622
+        ],
+        "top_ranked_score": 0.1381855085492134
+      },
+      "answer_check": {
+        "expected_keywords": [],
+        "answer_keyword_coverage": null,
+        "all_keywords_in_answer": null,
+        "abstention_detected": true,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "Recognized an abstention phrase for an unanswerable question."
+      },
+      "grounding": {
+        "id": "RAG-005",
+        "question": "What is the company's annual revenue?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The provided document context does not contain information about the company's annual revenue.",
+            "label": "ABSTENTION",
+            "lexical_coverage": null,
+            "evidence": null,
+            "reason": "Recognized abstention phrase; this does not prove the whole knowledge base lacks the answer."
+          }
+        ],
+        "summary": {
+          "claim_count": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": null
+        }
+      }
+    },
+    {
+      "id": "RAG-006",
+      "question": "Which chat completion model does the project use by default?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The project uses the `gpt-4.1-mini` chat completion model by default.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.6902950704097748,
+          0.5930930897593498,
+          0.38448586165904997,
+          0.3663346379995346,
+          0.27570055425167084
+        ],
+        "top_ranked_score": 0.6902950704097748
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "gpt-4.1-mini"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-006",
+        "question": "Which chat completion model does the project use by default?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The project uses the `gpt-4.1-mini` chat completion model by default.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "The default chat completion model is `gpt-4.1-mini`, configured through `CHAT_MODEL`."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-007",
+      "question": "How many dimensions are in the default embedding vectors?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The default embedding vectors have 1536 dimensions.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.507302314043045,
+          0.3248721808195114,
+          0.316417433321476,
+          0.3154810264706612,
+          0.3043683975934982
+        ],
+        "top_ranked_score": 0.507302314043045
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "1536"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-007",
+        "question": "How many dimensions are in the default embedding vectors?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The default embedding vectors have 1536 dimensions.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "It generates 1536-dimensional embedding vectors for document chunks and user questions."
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-008",
+      "question": "What is the configured text chunk size?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The configured text chunk size is 900 characters.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.483501856525739,
+          0.3690046861767769,
+          0.3620301246643066,
+          0.3453446701169014,
+          0.3182227020462354
+        ],
+        "top_ranked_score": 0.483501856525739
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "900"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-008",
+        "question": "What is the configured text chunk size?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The configured text chunk size is 900 characters.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "`CHUNK_SIZE`             Characters per text     `900`"
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-009",
+      "question": "How much overlap is configured between text chunks?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The configured overlap between text chunks is 150 characters.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.3832423448562622,
+          0.36095057129859925,
+          0.31400332748889925,
+          0.3130893647670746,
+          0.29919112026691436
+        ],
+        "top_ranked_score": 0.3832423448562622
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "150"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-009",
+        "question": "How much overlap is configured between text chunks?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The configured overlap between text chunks is 150 characters.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 0.75,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "`CHUNK_OVERLAP`          Overlap between chunks  `150`"
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-010",
+      "question": "Which document formats can users upload?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "Users can upload PDF, DOCX, TXT, and Markdown file formats.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.43367796152830124,
+          0.3825373327732086,
+          0.3593793860077858,
+          0.3342101785540581,
+          0.3272604024410248
+        ],
+        "top_ranked_score": 0.43367796152830124
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "PDF",
+          "DOCX",
+          "TXT",
+          "Markdown"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-010",
+        "question": "Which document formats can users upload?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "Users can upload PDF, DOCX, TXT, and Markdown file formats.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 0.556,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "Choose a PDF, DOCX, TXT, or Markdown file."
+            },
+            "missing_numbers": [],
+            "reason": "Claim matches a recognized, specific fact in the evidence snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-011",
+      "question": "What is the maximum document upload size?",
+      "answerable": true,
+      "status": "PASS",
+      "answer": "The maximum document upload size is 15 MB.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": "README.md",
+        "expected_source_found": true,
+        "top1_keyword_coverage": 1.0,
+        "topk_keyword_coverage": 1.0,
+        "all_keywords_in_top1": true,
+        "all_keywords_in_topk": true,
+        "ranked_scores": [
+          0.41721691687901813,
+          0.3760241836309433,
+          0.33574451406796774,
+          0.3267617717385292,
+          0.2579482801258564
+        ],
+        "top_ranked_score": 0.41721691687901813
+      },
+      "answer_check": {
+        "expected_keywords": [
+          "15"
+        ],
+        "answer_keyword_coverage": 1.0,
+        "all_keywords_in_answer": true,
+        "abstention_detected": false,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "All expected keywords appear in the answer."
+      },
+      "grounding": {
+        "id": "RAG-011",
+        "question": "What is the maximum document upload size?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The maximum document upload size is 15 MB.",
+            "label": "SUPPORTED",
+            "lexical_coverage": 1.0,
+            "evidence": {
+              "filename": "README.md",
+              "snippet": "`MAX_UPLOAD_MB`          Maximum upload size in  `15`"
+            },
+            "missing_numbers": [],
+            "reason": "High normalized lexical coverage in one retrieved source snippet."
+          }
+        ],
+        "summary": {
+          "claim_count": 1,
+          "supported": 1,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": 1.0
+        }
+      }
+    },
+    {
+      "id": "RAG-012",
+      "question": "What is the company's annual profit?",
+      "answerable": false,
+      "status": "PASS",
+      "answer": "The provided document context does not contain information about the company's annual profit.",
+      "retrieval": {
+        "source_count": 5,
+        "expected_source": null,
+        "expected_source_found": null,
+        "top1_keyword_coverage": null,
+        "topk_keyword_coverage": null,
+        "all_keywords_in_top1": null,
+        "all_keywords_in_topk": null,
+        "ranked_scores": [
+          0.1137365810573101,
+          0.10134785994887352,
+          0.09446783736348152,
+          0.08122003823518753,
+          0.07785923592746258
+        ],
+        "top_ranked_score": 0.1137365810573101
+      },
+      "answer_check": {
+        "expected_keywords": [],
+        "answer_keyword_coverage": null,
+        "all_keywords_in_answer": null,
+        "abstention_detected": true,
+        "behavior_check_passed": true,
+        "behavior_check_reason": "Recognized an abstention phrase for an unanswerable question."
+      },
+      "grounding": {
+        "id": "RAG-012",
+        "question": "What is the company's annual profit?",
+        "original_status": "PASS",
+        "claims": [
+          {
+            "claim": "The provided document context does not contain information about the company's annual profit.",
+            "label": "ABSTENTION",
+            "lexical_coverage": null,
+            "evidence": null,
+            "reason": "Recognized abstention phrase; this does not prove the whole knowledge base lacks the answer."
+          }
+        ],
+        "summary": {
+          "claim_count": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "uncertain": 0,
+          "supported_rate": null
+        }
+      }
+    }
+  ]
+}
