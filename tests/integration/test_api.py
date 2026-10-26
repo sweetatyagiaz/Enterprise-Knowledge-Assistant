@@ -256,19 +256,38 @@ def test_ask_accepts_question_with_surrounding_whitespace(
     )
 
 def test_ask_rejects_missing_question(client):
-    response = client.post("/ask", json={})
-    assert response.status_code == 422
+    assert client.post("/ask", json={}).status_code == 422
+
 
 def test_ask_rejects_null_question(client):
-    response = client.post("/ask", json={"question": None})
-    assert response.status_code == 422
+    assert client.post("/ask", json={"question": None}).status_code == 422
+
 
 def test_ask_rejects_numeric_question(client):
-    response = client.post("/ask", json={"question": 123})
-    assert response.status_code == 422
+    assert client.post("/ask", json={"question": 123}).status_code == 422
+
 
 def test_ask_rejects_boolean_question(client):
     assert client.post("/ask", json={"question": True}).status_code == 422
+
+
+def test_ask_rejects_whitespace_question(client):
+    assert client.post("/ask", json={"question": "   \t\n   "}).status_code == 400
+
+
+def test_ask_rejects_tabs_and_newlines(client):
+    assert client.post("/ask", json={"question": "\t\n   \t"}).status_code == 400
+
+
+def test_ask_accepts_surrounding_whitespace(client, mock_assistant):
+    response = client.post(
+        "/ask",
+        json={"question": "  What is the retention period?  "},
+    )
+    assert response.status_code == 200
+
+def test_ask_rejects_overlong_question(client):
+    assert client.post("/ask", json={"question": "A" * 4001}).status_code == 422
 
 
 
