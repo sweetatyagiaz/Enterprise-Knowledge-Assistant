@@ -359,3 +359,39 @@ def test_upload_rejects_invalid_documents(
     assert response.status_code == 400
     assert error in response.json()["detail"]
 
+
+def test_list_documents_empty(client, mock_assistant):
+    mock_assistant.store.list_documents.return_value = []
+    mock_assistant.store.count_chunks.return_value = 0
+
+    response = client.get("/documents")
+    assert response.status_code == 200
+    assert response.json()["documents"] == []
+    assert response.json()["chunk_count"] == 0
+
+
+def test_upload_returns_ingestion_metadata(client, mock_assistant):
+    mock_assistant.ingest.return_value = {
+        "filename": "report.txt",
+        "chunks_created": 3,
+        "status": "indexed",
+    }
+
+    response = client.post(
+        "/documents",
+        files={"file": ("report.txt", b"Report content", "text/plain")},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["chunks_created"] == 3
+    assert response.json()["status"] == "indexed"
+
+
+def test_upload_preserves_filename(client, mock_assistant):
+    client.post(
+        "/documents",
+        files={"file": ("my-report.txt", b"Content", "text/plain")},
+    )
+
+    mock_assistant.ingest.assert_called_once_with("my-report.txt", b"Content")
+
