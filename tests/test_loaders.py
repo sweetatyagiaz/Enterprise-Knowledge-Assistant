@@ -49,7 +49,8 @@ def test_load_docx_without_text():
     buffer = BytesIO()
     document.save(buffer)
 
-    assert load_document("empty.docx", buffer.getvalue()) == ""
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("empty.docx", buffer.getvalue())
 
 
 def test_load_pdf_without_pages():
@@ -57,9 +58,28 @@ def test_load_pdf_without_pages():
     buffer = BytesIO()
     writer.write(buffer)
 
-    assert load_document("empty.pdf", buffer.getvalue()) == ""
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("empty.pdf", buffer.getvalue())
 
 
 def test_load_malformed_pdf():
     with pytest.raises(Exception):
         load_document("broken.pdf", b"not a valid PDF")
+
+
+def test_load_docx_rejects_document_without_usable_text():
+    document = Document()
+    buffer = BytesIO()
+    document.save(buffer)
+
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("empty.docx", buffer.getvalue())
+
+
+def test_load_pdf_rejects_document_without_usable_text():
+    writer = PdfWriter()
+    buffer = BytesIO()
+    writer.write(buffer)
+
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("empty.pdf", buffer.getvalue())

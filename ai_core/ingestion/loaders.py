@@ -31,10 +31,15 @@ def load_document(filename: str, content: bytes) -> str:
         if reader.is_encrypted:
             raise ValueError("Encrypted PDFs are not supported.")
 
-        return "\n\n".join(
+        text = "\n\n".join(
             page.extract_text() or ""
             for page in reader.pages
         ).strip()
+
+        if not text:
+            raise ValueError("The PDF contains no usable text.")
+
+        return text
 
     if extension == ".docx":
         document = Document(BytesIO(content))
@@ -45,6 +50,11 @@ def load_document(filename: str, content: bytes) -> str:
             if paragraph.text.strip()
         ]
 
-        return "\n".join(paragraphs).strip()
+        text = "\n".join(paragraphs).strip()
+
+        if not text:
+            raise ValueError("The DOCX contains no usable text.")
+
+        return text
 
     raise ValueError(f"Unsupported file type: {extension}")
