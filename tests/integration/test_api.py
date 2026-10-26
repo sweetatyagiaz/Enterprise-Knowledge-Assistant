@@ -259,5 +259,9 @@ def test_ask_rejects_missing_question(client):
     response = client.post("/ask", json={})
     assert response.status_code == 422
 
+def test_ask_rejects_null_question(client):
+    response = client.post("/ask", json={"question": None})
+    assert response.status_code == 422
+
 
 
