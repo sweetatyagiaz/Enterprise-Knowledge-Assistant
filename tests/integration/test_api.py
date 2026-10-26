@@ -226,4 +226,12 @@ def test_ask_handles_unexpected_error(client, mock_assistant):
     assert response.status_code == 500
     assert "Sensitive internal details" not in response.text
 
+def test_ask_rejects_whitespace_question(client):
+    response = client.post(
+        "/ask",
+        json={"question": "   \t\n   "},
+    )
+
+    assert response.status_code == 422
+
 
