@@ -189,3 +189,16 @@ def test_upload_accepts_file_at_size_limit(client, mock_assistant, monkeypatch):
 
     assert response.status_code == 200
     mock_assistant.ingest.assert_called_once_with("boundary.txt", content)
+
+def test_upload_rejects_malformed_document(client, mock_assistant):
+    mock_assistant.ingest.side_effect = ValueError("Invalid PDF document.")
+
+    response = client.post(
+        "/documents",
+        files={"file": ("broken.pdf", b"invalid pdf", "application/pdf")},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid PDF document."
+
+
