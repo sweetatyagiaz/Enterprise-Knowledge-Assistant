@@ -26,15 +26,20 @@ def load_document(filename: str, content: bytes) -> str:
         return content.decode("utf-8-sig")
 
     if extension == ".pdf":
-        reader = PdfReader(BytesIO(content))
+        try:
+            reader = PdfReader(BytesIO(content))
 
-        if reader.is_encrypted:
-            raise ValueError("Encrypted PDFs are not supported.")
+            if reader.is_encrypted:
+                raise ValueError("Encrypted PDFs are not supported.")
 
-        text = "\n\n".join(
-            page.extract_text() or ""
-            for page in reader.pages
-        ).strip()
+            text = "\n\n".join(
+                page.extract_text() or ""
+                for page in reader.pages
+            ).strip()
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise ValueError("Invalid PDF document.") from exc
 
         if not text:
             raise ValueError("The PDF contains no usable text.")
@@ -42,15 +47,16 @@ def load_document(filename: str, content: bytes) -> str:
         return text
 
     if extension == ".docx":
-        document = Document(BytesIO(content))
-
-        paragraphs = [
-            paragraph.text
-            for paragraph in document.paragraphs
-            if paragraph.text.strip()
-        ]
-
-        text = "\n".join(paragraphs).strip()
+        try:
+            document = Document(BytesIO(content))
+            paragraphs = [
+                paragraph.text
+                for paragraph in document.paragraphs
+                if paragraph.text.strip()
+            ]
+            text = "\n".join(paragraphs).strip()
+        except Exception as exc:
+            raise ValueError("Invalid DOCX document.") from exc
 
         if not text:
             raise ValueError("The DOCX contains no usable text.")

@@ -83,3 +83,20 @@ def test_load_pdf_rejects_document_without_usable_text():
 
     with pytest.raises(ValueError, match="no usable text"):
         load_document("empty.pdf", buffer.getvalue())
+
+
+def test_load_malformed_docx():
+    with pytest.raises(ValueError, match="Invalid DOCX"):
+        load_document("broken.docx", b"not a valid DOCX")
+
+
+def test_load_encrypted_pdf():
+    writer = PdfWriter()
+    writer.add_blank_page(width=72, height=72)
+    writer.encrypt("test-password")
+
+    buffer = BytesIO()
+    writer.write(buffer)
+
+    with pytest.raises(ValueError, match="Encrypted PDFs"):
+        load_document("encrypted.pdf", buffer.getvalue())
