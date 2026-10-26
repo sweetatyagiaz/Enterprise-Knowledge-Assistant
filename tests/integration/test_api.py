@@ -312,5 +312,30 @@ def test_ask_rejects_negative_top_k(client):
         json={"question": "Valid question", "top_k": -1},
     ).status_code == 422
 
+def test_ask_rejects_zero_top_k(client):
+    assert client.post(
+        "/ask", json={"question": "Valid question", "top_k": 0}
+    ).status_code == 422
+
+
+def test_ask_rejects_top_k_above_limit(client):
+    assert client.post(
+        "/ask", json={"question": "Valid question", "top_k": 21}
+    ).status_code == 422
+
+
+def test_ask_accepts_minimum_top_k(client, mock_assistant):
+    response = client.post(
+        "/ask", json={"question": "Valid question", "top_k": 1}
+    )
+    assert response.status_code == 200
+
+
+def test_ask_accepts_maximum_top_k(client, mock_assistant):
+    response = client.post(
+        "/ask", json={"question": "Valid question", "top_k": 20}
+    )
+    assert response.status_code == 200
+
 
 
