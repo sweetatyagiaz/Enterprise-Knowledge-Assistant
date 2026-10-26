@@ -202,14 +202,17 @@ def test_upload_rejects_malformed_document(client, mock_assistant):
     assert response.json()["detail"] == "Invalid PDF document."
 
 def test_upload_handles_unexpected_error(client, mock_assistant):
-    mock_assistant.ingest.side_effect = RuntimeError("Internal details")
+    mock_assistant.ingest.side_effect = Exception("Sensitive internal details")
 
     response = client.post(
         "/documents",
         files={"file": ("sample.txt", b"content", "text/plain")},
     )
 
-    assert response.status_code == 503
-    assert response.json()["detail"] == "Internal details"
+    assert response.status_code == 500
+    assert response.json()["detail"] == (
+        "Document ingestion failed. Check the server logs."
+    )
+    assert "Sensitive internal details" not in response.text
 
 
