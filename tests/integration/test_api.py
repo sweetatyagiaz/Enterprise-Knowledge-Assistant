@@ -215,4 +215,15 @@ def test_upload_handles_unexpected_error(client, mock_assistant):
     )
     assert "Sensitive internal details" not in response.text
 
+def test_ask_handles_unexpected_error(client, mock_assistant):
+    mock_assistant.ask.side_effect = Exception("Sensitive internal details")
+
+    response = client.post(
+        "/ask",
+        json={"question": "What is the retention period?"},
+    )
+
+    assert response.status_code == 500
+    assert "Sensitive internal details" not in response.text
+
 
