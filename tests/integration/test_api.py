@@ -232,6 +232,6 @@ def test_ask_rejects_whitespace_question(client):
         json={"question": "   \t\n   "},
     )
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
