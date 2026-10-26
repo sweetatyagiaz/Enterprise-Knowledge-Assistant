@@ -234,4 +234,12 @@ def test_ask_rejects_whitespace_question(client):
 
     assert response.status_code == 400
 
+def test_ask_rejects_tabs_and_newlines(client):
+    response = client.post(
+        "/ask",
+        json={"question": "\t\n   \t"},
+    )
+
+    assert response.status_code == 400
+
 
