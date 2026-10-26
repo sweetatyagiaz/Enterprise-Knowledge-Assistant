@@ -395,3 +395,36 @@ def test_upload_preserves_filename(client, mock_assistant):
 
     mock_assistant.ingest.assert_called_once_with("my-report.txt", b"Content")
 
+
+def test_ask_returns_sources(client, mock_assistant):
+    response = client.post("/ask", json={"question": "Valid question"})
+    assert response.status_code == 200
+    assert response.json()["sources"] == [{"filename": "sample.txt"}]
+
+
+def test_ask_handles_service_unavailable(client, mock_assistant):
+    mock_assistant.ask.side_effect = RuntimeError("Model unavailable")
+    response = client.post("/ask", json={"question": "Valid question"})
+    assert response.status_code == 503
+
+
+def test_ask_hides_unexpected_error_details(client, mock_assistant):
+    mock_assistant.ask.side_effect = Exception("Sensitive internal details")
+    response = client.post("/ask", json={"question": "Valid question"})
+    assert response.status_code == 500
+    assert "Sensitive internal details" not in response.text
+
+
+def test_ask_returns_empty_sources(client, mock_assistant):
+    mock_assistant.ask.return_value = {"answer": "No information found", "sources": []}
+    response = client.post("/ask", json={"question": "Valid question"})
+    assert response.status_code == 200
+    assert response.json()["sources"] == []
+
+
+def test_ask_passes_top_k_to_service(client, mock_assistant):
+    response = client.post("/ask", json={"question": "Valid question", "top_k": 3})
+    assert response.status_code == 200
+    mock_assistant.ask.assert_called_once_with("Valid question", 3)
+
+
