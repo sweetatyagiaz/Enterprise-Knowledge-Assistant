@@ -242,4 +242,17 @@ def test_ask_rejects_tabs_and_newlines(client):
 
     assert response.status_code == 400
 
+def test_ask_accepts_question_with_surrounding_whitespace(
+    client, mock_assistant
+):
+    response = client.post(
+        "/ask",
+        json={"question": "  What is the retention period?  "},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == (
+        "The retention period is 90 days."
+    )
+
 
