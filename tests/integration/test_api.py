@@ -294,5 +294,11 @@ def test_ask_accepts_max_question_length(client, mock_assistant):
     response = client.post("/ask", json={"question": "A" * 4000})
     assert response.status_code == 200
 
+def test_ask_accepts_null_top_k(client):
+    assert client.post(
+        "/ask",
+        json={"question": "Valid question", "top_k": None},
+    ).status_code == 200
+
 
 
