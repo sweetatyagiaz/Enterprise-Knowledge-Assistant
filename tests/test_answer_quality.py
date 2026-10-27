@@ -622,4 +622,60 @@ def test_unknown_financial_answers_abstain_without_metric_evidence(
     assert financial_terms[1] not in result["answer"]
 
 
+def test_financial_guard_rejects_unrelated_number(make_assistant):
+    chunks = [{
+        "filename": "report.txt",
+        "text": (
+            "Annual revenue is not disclosed. "
+            "The company employs 90 people."
+        ),
+        "score": 0.9,
+    }]
+
+    result, messages = make_assistant(
+        "What is the company's annual revenue?",
+        chunks,
+        "Annual revenue is ₹50 crore.",
+    )
+
+    assert "does not contain information" in result["answer"].casefold()
+    assert messages == []
+
+
+def test_financial_guard_accepts_explicit_metric_value(make_assistant):
+    chunks = [{
+        "filename": "report.txt",
+        "text": "The company's annual revenue was ₹50 crore.",
+        "score": 0.9,
+    }]
+
+    result, messages = make_assistant(
+        "What is the company's annual revenue?",
+        chunks,
+        "The company's annual revenue was ₹50 crore.",
+    )
+
+    assert "₹50 crore" in result["answer"]
+    assert messages
+
+
+def test_financial_guard_requires_each_requested_metric(make_assistant):
+    chunks = [{
+        "filename": "report.txt",
+        "text": (
+            "The company's annual revenue was ₹50 crore. "
+            "The company employs 90 people."
+        ),
+        "score": 0.9,
+    }]
+
+    result, messages = make_assistant(
+        "What are the company's annual revenue and profit?",
+        chunks,
+        "Revenue was ₹50 crore and profit was ₹10 crore.",
+    )
+
+    assert "does not contain information" in result["answer"].casefold()
+    assert "profit" in result["answer"].casefold()
+    assert messages == []
 

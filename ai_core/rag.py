@@ -71,23 +71,61 @@ class KnowledgeAssistant:
         ]
 
         if requested_metrics:
-            evidence_sentences = re.split(
-                r"(?<=[.!?])\\s+|\\n+",
-                " ".join(str(item.get("text", "")) for item in results),
+            evidence_text = " ".join(
+                str(item.get("text", "")) for item in results
             )
-            has_metric_evidence = any(
-                any(term in sentence.casefold() for term in requested_metrics)
-                and re.search(r"\\d", sentence)
-                for sentence in evidence_sentences
+            evidence_sentences = re.split(
+                r"(?<=[.!?])\s+|\n+",
+                evidence_text,
             )
 
-            if not has_metric_evidence:
+            metric_patterns = {
+                "revenue": r"\b(?:annual\s+)?(?:revenue|sales|turnover)\b",
+                "profit": r"\b(?:annual\s+)?(?:profit|net income|operating income|earnings)\b",
+            }
+            numeric_value = (
+                r"(?:₹|Rs\.?|INR|USD|\$|€|£)?\s*"
+                r"\d[\d,]*(?:\.\d+)?"
+                r"(?:\s*(?:crores?|lakhs?|million|billion|thousand|mn|bn))?"
+            )
+            connectors = (
+                r"(?:is|was|of|:|=|amounted to|reached|totaled|"
+                r"stood at|reported at|reported as|approximately|around)"
+            )
+
+            def has_linked_value(metric, sentence):
+                pattern = (
+                    metric_patterns[metric]
+                    + r".{0,25}?"
+                    + connectors
+                    + r"\s*"
+                    + numeric_value
+                )
+                reverse_pattern = (
+                    numeric_value
+                    + r".{0,20}?\b(?:in|of)\s+"
+                    + metric_patterns[metric]
+                )
+                return bool(
+                    re.search(pattern, sentence, re.IGNORECASE)
+                    or re.search(reverse_pattern, sentence, re.IGNORECASE)
+                )
+
+            all_metrics_supported = all(
+                any(
+                    has_linked_value(metric, sentence)
+                    for sentence in evidence_sentences
+                )
+                for metric in requested_metrics
+            )
+
+            if not all_metrics_supported:
                 metric = " and ".join(requested_metrics)
                 return {
                     "answer": (
                         "The provided document context does not contain "
-                        f"information with a numeric value for the company's "
-                        f"annual {metric}."
+                        "information with a verified numeric value for the "
+                        f"company's annual {metric}."
                     ),
                     "sources": results,
                 }
