@@ -735,3 +735,17 @@ def test_grounding_rejects_wrong_database_when_sources_mention_both_engines():
     )
 
     assert result["label"] == "UNSUPPORTED"
+
+
+def test_grounding_marks_conflicting_values_for_same_configuration_uncertain():
+    sources = [
+        {"filename": "settings.py", "text": "CHUNK_SIZE is 900 characters."},
+        {"filename": "deployment.md", "text": "CHUNK_SIZE is 1200 characters."},
+    ]
+
+    result = evaluate_claim(
+        "CHUNK_SIZE is 900 characters.",
+        sources,
+    )
+
+    assert result["label"] == "UNCERTAIN"
