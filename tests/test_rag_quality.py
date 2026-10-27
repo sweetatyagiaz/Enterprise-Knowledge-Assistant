@@ -243,4 +243,51 @@ def test_main_returns_error_when_reference_dataset_is_missing(
     assert evaluator.main() == 1
 
 
+def test_main_reports_cases_missing_from_reference_dataset(
+    tmp_path, monkeypatch
+):
+    import json
+    import tests.evaluate_rag_quality as evaluator
+
+    report_dir = tmp_path / "reports"
+    report_dir.mkdir()
+
+    report_path = report_dir / "live_api_evaluation_test.json"
+    report_path.write_text(
+        json.dumps({
+            "results": [
+                {
+                    "id": "UNKNOWN-CASE",
+                    "question": "Unknown question?",
+                    "answer": "Unknown answer.",
+                    "status": "PASS",
+                    "sources": [],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+
+    dataset_path = tmp_path / "rag_ground_truth.json"
+    dataset_path.write_text("[]", encoding="utf-8")
+
+    monkeypatch.setattr(evaluator, "REPORT_DIR", report_dir)
+    monkeypatch.setattr(evaluator, "DATASET_PATH", dataset_path)
+
+    assert evaluator.main() == 0
+
+    generated_reports = list(report_dir.glob("rag_quality_evaluation_*.json"))
+    assert len(generated_reports) == 1
+
+    generated = json.loads(
+        generated_reports[0].read_text(encoding="utf-8")
+    )
+    summary = generated["summary"]
+
+    assert summary["cases_missing_reference"] == ["UNKNOWN-CASE"]
+    assert summary["cases_evaluated"] == 0
+    assert summary["answerable_cases"] == 0
+    assert summary["unanswerable_cases"] == 0
+
+
 
