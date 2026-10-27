@@ -597,5 +597,42 @@ def test_empty_retrieval_does_not_call_llm(make_assistant, monkeypatch):
     assert calls == []
     assert messages == []
 
+@pytest.mark.parametrize(
+    ("question", "generated_answer", "financial_terms"),
+    [
+        (
+            "What is the company's annual revenue?",
+            "The company's annual revenue is ₹50 crore.",
+            ["revenue", "₹50 crore"],
+        ),
+        (
+            "What is the company's annual profit?",
+            "The company's annual profit is ₹10 crore.",
+            ["profit", "₹10 crore"],
+        ),
+    ],
+)
+def test_unknown_financial_answers_are_not_automatically_verified(
+    make_assistant, question, generated_answer, financial_terms
+):
+    chunks = [
+        {
+            "filename": "README.md",
+            "text": (
+                "This project is an Enterprise Knowledge Assistant "
+                "built with FastAPI, OpenAI embeddings, and SQLite."
+            ),
+            "score": 0.2,
+        }
+    ]
+
+    result, _ = make_assistant(question, chunks, generated_answer)
+
+    # The mocked LLM output is returned unchanged by ask().
+    # This test documents the gap: answer generation alone does not
+    # guarantee that unsupported financial claims are rejected.
+    assert result["answer"] == generated_answer
+    assert all(term in result["answer"] for term in financial_terms)
+
 
 
