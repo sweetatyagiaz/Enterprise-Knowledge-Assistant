@@ -84,3 +84,48 @@ def test_search_rejects_non_positive_top_k(vector_store):
 
     # Current behavior clamps top_k to at least one.
     assert len(vector_store.search([1.0, 0.0], top_k=0)) == 1
+
+def test_search_returns_empty_when_store_has_no_documents(vector_store):
+    assert vector_store.search([1.0, 0.0]) == []
+
+
+def test_search_respects_top_k(vector_store):
+    vector_store.add_document(
+        "guide.md",
+        ["First", "Second", "Third"],
+        [[1.0, 0.0], [0.8, 0.2], [0.0, 1.0]],
+    )
+
+    results = vector_store.search([1.0, 0.0], top_k=2)
+
+    assert len(results) == 2
+
+
+def test_search_ranks_best_match_first(vector_store):
+    vector_store.add_document(
+        "guide.md",
+        ["Orthogonal match", "Exact match", "Similar match"],
+        [[0.0, 1.0], [1.0, 0.0], [0.8, 0.6]],
+    )
+
+    results = vector_store.search([1.0, 0.0], top_k=3)
+
+    assert results[0]["text"] == "Exact match"
+    assert results[0]["score"] >= results[1]["score"]
+    assert results[1]["score"] >= results[2]["score"]
+
+
+def test_search_results_include_filename_and_score(vector_store):
+    vector_store.add_document(
+        "architecture.md",
+        ["The system uses retrieval-augmented generation."],
+        [[1.0, 0.0]],
+    )
+
+    result = vector_store.search([1.0, 0.0])[0]
+
+    assert result["filename"] == "architecture.md"
+    assert result["text"] == "The system uses retrieval-augmented generation."
+    assert result["score"] == pytest.approx(1.0)
+
+
