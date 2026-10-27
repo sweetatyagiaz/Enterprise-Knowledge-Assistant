@@ -762,4 +762,69 @@ def test_docx_loader_rejects_malformed_content():
     with pytest.raises(ValueError, match="Invalid DOCX document"):
         load_document("broken.docx", b"This is not a DOCX file.")
 
+def test_chunk_text_handles_long_unicode_content():
+    text = "你好世界🙂 café " * 100
+
+    chunks = chunk_text(
+        text,
+        chunk_size=100,
+        chunk_overlap=10,
+    )
+
+    assert len(chunks) > 1
+    assert all(len(chunk) <= 100 for chunk in chunks)
+    assert "".join(chunks).replace(" ", "")  # Non-empty Unicode output
+
+
+def test_chunk_text_supports_zero_overlap():
+    text = "abcdefghij"
+
+    chunks = chunk_text(
+        text,
+        chunk_size=5,
+        chunk_overlap=0,
+    )
+
+    assert chunks == ["abcde", "fghij"]
+
+
+def test_chunk_text_preserves_heading_in_long_section():
+    text = "# Architecture\n\n" + ("Vector retrieval uses embeddings. " * 20)
+
+    chunks = chunk_text(
+        text,
+        chunk_size=100,
+        chunk_overlap=10,
+    )
+
+    assert len(chunks) > 1
+    assert all(chunk.startswith("# Architecture") for chunk in chunks)
+
+
+def test_chunk_text_respects_chunk_size_for_long_paragraph():
+    text = "A" * 500
+
+    chunks = chunk_text(
+        text,
+        chunk_size=80,
+        chunk_overlap=10,
+    )
+
+    assert len(chunks) > 1
+    assert all(len(chunk) <= 80 for chunk in chunks)
+
+
+def test_chunk_text_preserves_content_across_overlapping_chunks():
+    text = "alpha beta gamma delta epsilon zeta eta theta"
+
+    chunks = chunk_text(
+        text,
+        chunk_size=20,
+        chunk_overlap=5,
+    )
+
+    assert len(chunks) > 1
+    assert all(chunk.strip() for chunk in chunks)
+    assert all(word in " ".join(chunks) for word in text.split())
+
 
