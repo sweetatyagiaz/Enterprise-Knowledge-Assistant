@@ -735,4 +735,31 @@ def test_hybrid_rank_rejects_negative_weights():
             semantic_weight=-0.1,
         )
 
+def test_text_loader_supports_utf8_bom():
+    content = b"\xef\xbb\xbfHello from UTF-8."
+
+    result = load_document("notes.txt", content)
+
+    assert result == "Hello from UTF-8."
+
+
+def test_text_loader_rejects_invalid_utf8():
+    with pytest.raises(ValueError, match="UTF-8 is required"):
+        load_document("notes.txt", b"\xff\xfe\xfa")
+
+
+def test_text_loader_rejects_whitespace_only_content():
+    with pytest.raises(ValueError, match="no usable text"):
+        load_document("notes.md", b"   \n\t  ")
+
+
+def test_pdf_loader_rejects_malformed_content():
+    with pytest.raises(ValueError, match="Invalid PDF document"):
+        load_document("broken.pdf", b"This is not a PDF file.")
+
+
+def test_docx_loader_rejects_malformed_content():
+    with pytest.raises(ValueError, match="Invalid DOCX document"):
+        load_document("broken.docx", b"This is not a DOCX file.")
+
 
