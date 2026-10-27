@@ -137,4 +137,30 @@ def test_hybrid_rank_rejects_non_finite_semantic_scores(score):
             [{"text": "SQLite storage", "score": score}],
         )
 
+def test_hybrid_rank_prefers_chunk_overlap_configuration():
+    results = [
+        {
+            "text": (
+                "The default number of retrieved chunks is 5 per question "
+                "using TOP_K=5."
+            ),
+            "score": 0.370,
+        },
+        {
+            "text": (
+                "CHUNK_SIZE is 900 characters. "
+                "CHUNK_OVERLAP is 150 characters."
+            ),
+            "score": 0.258,
+        },
+    ]
+
+    ranked = hybrid_rank(
+        "How many characters from one chunk are repeated in the next chunk?",
+        results,
+    )
+
+    assert "CHUNK_OVERLAP" in ranked[0]["text"]
+    assert "150" in ranked[0]["text"]
+
 

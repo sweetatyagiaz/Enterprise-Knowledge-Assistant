@@ -10,6 +10,12 @@ STOP_WORDS = {
     "with", "does", "do", "default", "project",
 }
 
+TOKEN_SYNONYMS = {
+    "repeated": "overlap",
+    "repeat": "overlap",
+    "repeating": "overlap",
+}
+
 
 def _tokens(text: str) -> list[str]:
     """Tokenize text into lowercase alphanumeric words."""
@@ -17,9 +23,9 @@ def _tokens(text: str) -> list[str]:
 
 
 def _content_tokens(text: str) -> set[str]:
-    """Remove common words that carry little retrieval meaning."""
+    """Remove common words and normalize simple retrieval synonyms."""
     return {
-        token
+        TOKEN_SYNONYMS.get(token, token)
         for token in _tokens(text)
         if token not in STOP_WORDS
     }
@@ -50,7 +56,7 @@ def hybrid_rank(
     query: str,
     results: list[dict],
     semantic_weight: float = 0.75,
-    lexical_weight: float = 0.15,
+    lexical_weight: float = 0.20,
     phrase_weight: float = 0.10,
 ) -> list[dict]:
     """
