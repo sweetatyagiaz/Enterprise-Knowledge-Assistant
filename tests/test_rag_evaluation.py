@@ -471,6 +471,117 @@ def test_rag_preserves_retrieved_sources(monkeypatch):
     assert result["sources"] == [source]
     assert result["sources"][0]["filename"] == "guide.md"
 
+def test_ingest_returns_indexing_metadata(monkeypatch):
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        chunk_size=100,
+        chunk_overlap=10,
+    )
+    assistant.embeddings = SimpleNamespace(
+        embed_texts=lambda chunks: [[1.0, 0.0] for _ in chunks]
+    )
+    stored = {}
+    assistant.store = SimpleNamespace(
+        add_document=lambda **kwargs: stored.update(kwargs)
+    )
 
+    monkeypatch.setattr(
+        "ai_core.rag.load_document",
+        lambda filename, content: "Knowledge assistant documentation.",
+    )
+    monkeypatch.setattr(
+        "ai_core.rag.chunk_text",
+        lambda text, chunk_size, chunk_overlap: [text],
+    )
+
+    result = assistant.ingest("guide.txt", b"document bytes")
+
+    assert result == {
+        "filename": "guide.txt",
+        "chunks_created": 1,
+        "status": "indexed",
+    }
+    assert stored["filename"] == "guide.txt"
+    assert stored["chunks"] == ["Knowledge assistant documentation."]
+    assert stored["embeddings"] == [[1.0, 0.0]]
+
+
+def test_ingest_passes_configured_chunk_settings(monkeypatch):
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        chunk_size=200,
+        chunk_overlap=25,
+    )
+    assistant.embeddings = SimpleNamespace(embed_texts=lambda chunks: [])
+    assistant.store = SimpleNamespace(add_document=lambda **kwargs: None)
+    captured = {}
+
+    monkeypatch.setattr(
+        "ai_core.rag.load_document",
+        lambda filename, content: "Some readable document text.",
+    )
+
+    def fake_chunk_text(text, chunk_size, chunk_overlap):
+        captured["chunk_size"] = chunk_size
+        captured["chunk_overlap"] = chunk_overlap
+        return ["Some readable document text."]
+
+    monkeypatch.setattr("ai_core.rag.chunk_text", fake_chunk_text)
+
+    assistant.ingest("guide.txt", b"text")
+
+    assert captured == {"chunk_size": 200, "chunk_overlap": 25}
+
+
+def test_ingest_rejects_whitespace_only_text(monkeypatch):
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        chunk_size=100,
+        chunk_overlap=10,
+    )
+    assistant.embeddings = SimpleNamespace(
+        embed_texts=lambda chunks: pytest.fail("Embedding should not run")
+    )
+    assistant.store = SimpleNamespace(
+        add_document=lambda **kwargs: pytest.fail("Storage should not run")
+    )
+
+    monkeypatch.setattr(
+        "ai_core.rag.load_document",
+        lambda filename, content: "   \n\t ",
+    )
+
+    with pytest.raises(ValueError, match="no readable text"):
+        assistant.ingest("blank.txt", b"content")
+
+
+def test_ingest_handles_empty_chunk_list(monkeypatch):
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        chunk_size=100,
+        chunk_overlap=10,
+    )
+    assistant.embeddings = SimpleNamespace(embed_texts=lambda chunks: [])
+    stored = {}
+    assistant.store = SimpleNamespace(
+        add_document=lambda **kwargs: stored.update(kwargs)
+    )
+
+    monkeypatch.setattr(
+        "ai_core.rag.load_document",
+        lambda filename, content: "Readable text that produces no chunks.",
+    )
+    monkeypatch.setattr(
+        "ai_core.rag.chunk_text",
+        lambda text, chunk_size, chunk_overlap: [],
+    )
+
+    result = assistant.ingest("empty-chunks.txt", b"content")
+
+    assert result["chunks_created"] == 0
+    assert stored["chunks"] == []
+    assert stored["embeddings"] == []
+
+    
 
 
