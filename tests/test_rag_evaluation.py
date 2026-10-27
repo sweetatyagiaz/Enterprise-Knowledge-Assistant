@@ -330,5 +330,147 @@ def test_architecture_chunk_contains_component_descriptions():
     assert len(component_chunk) <= 900
 
 
+def test_rag_returns_fallback_when_hybrid_ranking_is_empty(monkeypatch):
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(top_k=5)
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: [
+            {
+                "filename": "notes.txt",
+                "text": "Some unrelated information.",
+                "score": 0.5,
+            }
+        ]
+    )
+
+    monkeypatch.setattr("ai_core.rag.hybrid_rank", lambda question, candidates: [])
+
+    result = assistant.ask("What is the answer?")
+
+    assert result["sources"] == []
+    assert "could not find relevant information" in result["answer"].lower()
+
+
+def test_rag_uses_custom_top_k(monkeypatch):
+    captured = {}
+
+    assistant = object.__new__(KnowledgeAssistant)
+    # assistant.settings = SimpleNamespace(top_k=5)
+    assistant.settings = SimpleNamespace(top_k=5, openai_api_key="test-key", 
+                                         chat_model="mock-model",)
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+
+    def fake_search(query_vector, top_k):
+        captured["candidate_k"] = top_k
+        return [
+            {
+                "filename": "notes.txt",
+                "text": "Relevant information.",
+                "score": 1.0,
+            }
+        ]
+
+    assistant.store = SimpleNamespace(search=fake_search)
+
+    monkeypatch.setattr(
+        "ai_core.rag.hybrid_rank",
+        lambda question, candidates: candidates,
+    )
+
+    class FakeOpenAI:
+        def __init__(self, api_key):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(create=lambda **kwargs: SimpleNamespace(
+                    choices=[
+                        SimpleNamespace(
+                            message=SimpleNamespace(content="Relevant answer.")
+                        )
+                    ]
+                ))
+            )
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+
+    result = assistant.ask("What is relevant?", top_k=1)
+
+    assert captured["candidate_k"] == 10
+    assert len(result["sources"]) == 1
+    assert result["answer"] == "Relevant answer."
+
+
+def test_rag_passes_question_to_embedding_service():
+    captured = {}
+
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(top_k=5)
+
+    def fake_embed_query(question):
+        captured["question"] = question
+        return [1.0, 0.0]
+
+    assistant.embeddings = SimpleNamespace(embed_query=fake_embed_query)
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: []
+    )
+
+    assistant.ask("Explain vector retrieval.")
+
+    assert captured["question"] == "Explain vector retrieval."
+
+
+def test_rag_preserves_retrieved_sources(monkeypatch):
+    source = {
+        "filename": "guide.md",
+        "text": "The system uses retrieval-augmented generation.",
+        "score": 0.95,
+    }
+
+    assistant = object.__new__(KnowledgeAssistant)
+    assistant.settings = SimpleNamespace(
+        top_k=5,
+        openai_api_key="test-key",
+        chat_model="mock-model",
+    )
+    assistant.embeddings = SimpleNamespace(
+        embed_query=lambda question: [1.0, 0.0]
+    )
+    assistant.store = SimpleNamespace(
+        search=lambda query_vector, top_k: [source]
+    )
+
+    monkeypatch.setattr(
+        "ai_core.rag.hybrid_rank",
+        lambda question, candidates: candidates,
+    )
+
+    class FakeOpenAI:
+        def __init__(self, api_key):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=lambda **kwargs: SimpleNamespace(
+                        choices=[
+                            SimpleNamespace(
+                                message=SimpleNamespace(
+                                    content="The system uses RAG."
+                                )
+                            )
+                        ]
+                    )
+                )
+            )
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+
+    result = assistant.ask("What approach is used?")
+
+    assert result["sources"] == [source]
+    assert result["sources"][0]["filename"] == "guide.md"
+
+
 
 
