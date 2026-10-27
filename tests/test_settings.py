@@ -1,6 +1,8 @@
 from pathlib import Path
 
 from ai_core.settings import Settings, get_settings
+import pytest
+from pydantic import ValidationError
 
 
 def test_settings_have_expected_defaults(monkeypatch):
@@ -59,3 +61,38 @@ def test_get_settings_returns_cached_instance():
         assert first is second
     finally:
         get_settings.cache_clear()
+
+@pytest.mark.parametrize(
+    ("setting", "value"),
+    [
+        ("embedding_dimensions", 0),
+        ("chunk_size", 0),
+        ("top_k", 0),
+        ("max_upload_mb", 0),
+        ("chunk_overlap", -1),
+    ],
+)
+def test_settings_reject_invalid_positive_limits(setting, value):
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, **{setting: value})
+
+
+def test_settings_reject_overlap_equal_to_chunk_size():
+    with pytest.raises(ValidationError, match="chunk_overlap"):
+        Settings(_env_file=None, chunk_size=100, chunk_overlap=100)
+
+
+def test_settings_reject_overlap_greater_than_chunk_size():
+    with pytest.raises(ValidationError, match="chunk_overlap"):
+        Settings(_env_file=None, chunk_size=100, chunk_overlap=101)
+
+
+def test_settings_accept_zero_chunk_overlap():
+    settings = Settings(_env_file=None, chunk_size=100, chunk_overlap=0)
+
+    assert settings.chunk_size == 100
+    assert settings.chunk_overlap == 0
+
+
+
+
