@@ -679,3 +679,59 @@ def test_financial_guard_requires_each_requested_metric(make_assistant):
     assert "profit" in result["answer"].casefold()
     assert messages == []
 
+def test_grounding_ignores_unrelated_negation():
+    sources = [
+        {
+            "filename": "README.md",
+            "text": (
+                "The project uses SQLite for document storage. "
+                "It does not store uploaded files permanently."
+            ),
+        }
+    ]
+
+    result = evaluate_claim(
+        "The project uses SQLite for document storage.",
+        sources,
+    )
+
+    assert result["label"] == "SUPPORTED"
+
+
+
+def test_grounding_detects_conflict_with_unrelated_negation():
+    sources = [
+        {
+            "filename": "README.md",
+            "text": (
+                "The project uses PostgreSQL for storage. "
+                "It does not store uploaded files permanently."
+            ),
+        }
+    ]
+
+    result = evaluate_claim(
+        "The project uses SQLite for storage.",
+        sources,
+    )
+
+    assert result["label"] == "UNSUPPORTED"
+
+
+def test_grounding_rejects_wrong_database_when_sources_mention_both_engines():
+    sources = [
+        {
+            "filename": "README.md",
+            "text": (
+                "The application uses PostgreSQL for surveillance records. "
+                "The knowledge assistant uses SQLite for its local vector store."
+            ),
+        }
+    ]
+
+    result = evaluate_claim(
+        "The surveillance application uses SQLite for surveillance records.",
+        sources,
+    )
+
+    assert result["label"] == "UNSUPPORTED"

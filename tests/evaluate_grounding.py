@@ -397,17 +397,21 @@ def conflicting_source_values(claim: str, sources: list[dict]) -> bool:
 
 
 def has_database_engine_conflict(claim: str, evidence: str) -> bool:
-    """Detect a claim naming a different database engine than the evidence."""
+    """Detect a database-engine mismatch in the relevant evidence snippet."""
     engines = ("sqlite", "postgresql", "postgres", "mysql", "mariadb", "mongodb")
-    claim_engines = {engine for engine in engines if re.search(rf"\b{engine}\b", claim, re.I)}
-    evidence_engines = {
-        engine for engine in engines if re.search(rf"\b{engine}\b", evidence, re.I)
-    }
 
-    if "postgres" in claim_engines:
-        claim_engines.add("postgresql")
-    if "postgres" in evidence_engines:
-        evidence_engines.add("postgresql")
+    def normalize_engines(text: str) -> set[str]:
+        found = {
+            engine
+            for engine in engines
+            if re.search(rf"\b{engine}\b", text, re.I)
+        }
+        if "postgres" in found:
+            found.add("postgresql")
+        return found
+
+    claim_engines = normalize_engines(claim)
+    evidence_engines = normalize_engines(evidence)
 
     return bool(
         claim_engines
@@ -510,7 +514,7 @@ def evaluate_claim(claim: str, sources: list[dict]) -> dict:
     elif has_qualification_conflict(claim, all_evidence):
         label = "UNSUPPORTED"
         reason = "The claim conflicts with the documented minimum or maximum qualification."
-    elif has_database_engine_conflict(claim, all_evidence):
+    elif has_database_engine_conflict(claim, best["text"]):
         label = "UNSUPPORTED"
         reason = "The claimed database engine conflicts with the documented engine."
     elif has_unsupported_database_model_link(claim, sources):
