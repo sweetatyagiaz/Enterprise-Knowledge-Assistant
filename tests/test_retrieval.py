@@ -117,4 +117,24 @@ def test_hybrid_rank_returns_original_results_for_stopword_only_query():
 
     assert ranked is results
 
+@pytest.mark.parametrize(
+    "weight",
+    [float("nan"), float("inf"), float("-inf")],
+)
+def test_hybrid_rank_rejects_non_finite_weights(weight):
+    with pytest.raises(ValueError, match="finite"):
+        hybrid_rank("SQLite", [], semantic_weight=weight)
+
+
+@pytest.mark.parametrize(
+    "score",
+    [float("nan"), float("inf"), float("-inf")],
+)
+def test_hybrid_rank_rejects_non_finite_semantic_scores(score):
+    with pytest.raises(ValueError, match="finite"):
+        hybrid_rank(
+            "SQLite",
+            [{"text": "SQLite storage", "score": score}],
+        )
+
 
