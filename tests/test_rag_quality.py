@@ -166,3 +166,53 @@ def test_reference_answer_overlap_ignores_case_and_punctuation():
     )
 
     assert result["f1"] == 1.0
+
+def test_reference_answer_overlap_handles_empty_text():
+    from tests.evaluate_rag_quality import reference_answer_overlap
+
+    result = reference_answer_overlap("", "SQLite stores document chunks.")
+
+    assert result == {
+        "reference_available": True,
+        "precision": None,
+        "recall": None,
+        "f1": None,
+    }
+
+
+def test_reference_answer_overlap_handles_whitespace_only_reference():
+    from tests.evaluate_rag_quality import reference_answer_overlap
+
+    result = reference_answer_overlap("Some answer.", "   ")
+
+    assert result == {
+        "reference_available": True,
+        "precision": None,
+        "recall": None,
+        "f1": None,
+    }
+
+
+def test_invalid_retrieval_score_does_not_crash_evaluation():
+    result = make_result(
+        "The default embedding model is text-embedding-3-small.",
+        [
+            {
+                "filename": "README.md",
+                "text": "The default embedding model is text-embedding-3-small.",
+                "score": "invalid",
+                "hybrid_score": "invalid",
+            }
+        ],
+    )
+    reference = make_reference(
+        keywords=["text-embedding-3-small"]
+    )
+
+    evaluated = evaluate_case(result, reference)
+
+    assert evaluated["retrieval"]["source_count"] == 1
+    assert evaluated["retrieval"]["ranked_scores"] == []
+    assert evaluated["retrieval"]["top_ranked_score"] is None
+
+
