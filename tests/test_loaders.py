@@ -131,3 +131,32 @@ def test_load_whitespace_only_pdf():
     with pytest.raises(ValueError, match="no usable text"):
         load_document("whitespace.pdf", buffer.getvalue())
 
+def test_load_txt_preserves_internal_newlines():
+    content = b"First line\nSecond line\nThird line"
+
+    assert load_document("notes.txt", content) == (
+        "First line\nSecond line\nThird line"
+    )
+
+
+def test_load_markdown_preserves_unicode():
+    content = "# RAG — 文档".encode("utf-8")
+
+    assert load_document("readme.md", content) == "# RAG — 文档"
+
+
+def test_load_docx_preserves_multiple_paragraphs():
+    document = Document()
+    document.add_paragraph("First paragraph")
+    document.add_paragraph("Second paragraph")
+
+    buffer = BytesIO()
+    document.save(buffer)
+
+    result = load_document("notes.docx", buffer.getvalue())
+
+    assert "First paragraph" in result
+    assert "Second paragraph" in result
+
+
+
