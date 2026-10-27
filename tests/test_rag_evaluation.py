@@ -582,6 +582,105 @@ def test_ingest_handles_empty_chunk_list(monkeypatch):
     assert stored["chunks"] == []
     assert stored["embeddings"] == []
 
-    
+def test_vector_store_empty_database_returns_no_results(
+    tmp_path,
+    monkeypatch,
+):
+    database_path = tmp_path / "empty_vectors.sqlite3"
+    monkeypatch.setattr(
+        "ai_core.vector_store.get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    store = VectorStore()
+
+    assert store.search([1.0, 0.0]) == []
+
+
+def test_vector_store_top_k_limits_results(
+    tmp_path,
+    monkeypatch,
+):
+    database_path = tmp_path / "top_k_vectors.sqlite3"
+    monkeypatch.setattr(
+        "ai_core.vector_store.get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    store = VectorStore()
+    store.add_document(
+        filename="vectors.txt",
+        chunks=["Best match", "Second match", "Third match"],
+        embeddings=[
+            [1.0, 0.0],
+            [0.8, 0.6],
+            [0.0, 1.0],
+        ],
+    )
+
+    results = store.search([1.0, 0.0], top_k=2)
+
+    assert len(results) == 2
+    assert [item["text"] for item in results] == [
+        "Best match",
+        "Second match",
+    ]
+
+
+def test_vector_store_skips_embeddings_with_wrong_dimensions(
+    tmp_path,
+    monkeypatch,
+):
+    database_path = tmp_path / "dimensions_vectors.sqlite3"
+    monkeypatch.setattr(
+        "ai_core.vector_store.get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    store = VectorStore()
+    store.add_document(
+        filename="vectors.txt",
+        chunks=["Matching dimensions", "Different dimensions"],
+        embeddings=[
+            [1.0, 0.0],
+            [1.0, 0.0, 0.0],
+        ],
+    )
+
+    results = store.search([1.0, 0.0], top_k=5)
+
+    assert len(results) == 1
+    assert results[0]["text"] == "Matching dimensions"
+
+
+def test_vector_store_lists_documents_and_counts_chunks(
+    tmp_path,
+    monkeypatch,
+):
+    database_path = tmp_path / "metadata_vectors.sqlite3"
+    monkeypatch.setattr(
+        "ai_core.vector_store.get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    store = VectorStore()
+    store.add_document(
+        filename="b.txt",
+        chunks=["Chunk B1", "Chunk B2"],
+        embeddings=[[1.0, 0.0], [0.0, 1.0]],
+    )
+    store.add_document(
+        filename="a.txt",
+        chunks=["Chunk A1"],
+        embeddings=[[1.0, 1.0]],
+    )
+
+    assert store.count_chunks() == 3
+    assert store.list_documents() == [
+        {"filename": "a.txt", "chunk_count": 1},
+        {"filename": "b.txt", "chunk_count": 2},
+    ]
+
+
 
 
