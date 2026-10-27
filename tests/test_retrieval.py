@@ -78,4 +78,43 @@ def test_hybrid_rank_gives_no_keyword_credit_to_irrelevant_chunks():
     assert all(result["phrase_score"] == 0.0 for result in ranked)
     assert all("hybrid_score" in result for result in ranked)
 
+def test_hybrid_rank_returns_empty_results_unchanged():
+    results = []
+
+    assert hybrid_rank("database search", results) is results
+
+
+def test_hybrid_rank_preserves_order_when_scores_tie():
+    results = [
+        {"text": "alpha", "score": 0.5},
+        {"text": "beta", "score": 0.5},
+    ]
+
+    ranked = hybrid_rank(
+        "unrelated query",
+        results,
+        semantic_weight=1.0,
+        lexical_weight=0.0,
+        phrase_weight=0.0,
+    )
+
+    assert [item["text"] for item in ranked] == ["alpha", "beta"]
+
+
+def test_hybrid_rank_defaults_missing_semantic_score_to_zero():
+    results = [{"text": "database indexing"}]
+
+    ranked = hybrid_rank("database indexing", results)
+
+    assert ranked[0]["semantic_score"] == 0.0
+    assert ranked[0]["hybrid_score"] > 0.0
+
+
+def test_hybrid_rank_returns_original_results_for_stopword_only_query():
+    results = [{"text": "database indexing", "score": 0.8}]
+
+    ranked = hybrid_rank("what is the", results)
+
+    assert ranked is results
+
 
