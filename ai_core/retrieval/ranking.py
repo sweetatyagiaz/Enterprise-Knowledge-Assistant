@@ -1,5 +1,6 @@
 
 import re
+import math
 
 
 STOP_WORDS = {
@@ -52,12 +53,32 @@ def hybrid_rank(
     lexical_weight: float = 0.15,
     phrase_weight: float = 0.10,
 ) -> list[dict]:
-    """Rerank semantic candidates with content-token and phrase overlap."""
+    """
+    Rerank semantic candidates using semantic, lexical, and phrase scores.
+
+    Args:
+        query: User's search query.
+        results: Retrieved chunks containing text and optional semantic scores.
+        semantic_weight: Weight assigned to the semantic similarity score.
+        lexical_weight: Weight assigned to keyword overlap.
+        phrase_weight: Weight assigned to adjacent query-phrase matches.
+
+    Returns:
+        A reranked list of copied result dictionaries with:
+        semantic_score, lexical_score, phrase_score, and hybrid_score.
+
+    Raises:
+        ValueError: If weights are negative or non-finite, all weights are
+            zero, or a semantic score is non-finite.
+    """
+    import math
 
     weights = (semantic_weight, lexical_weight, phrase_weight)
 
-    if any(weight < 0 for weight in weights):
-        raise ValueError("Ranking weights must be non-negative.")
+    if any(not math.isfinite(weight) or weight < 0 for weight in weights):
+        raise ValueError(
+            "Ranking weights must be finite and non-negative."
+        )
 
     if sum(weights) <= 0:
         raise ValueError("At least one ranking weight must be positive.")
@@ -80,12 +101,17 @@ def hybrid_rank(
 
         phrase_score = _phrase_score(query, text)
 
+        semantic_score = float(result.get("score", 0.0))
+
+        if not math.isfinite(semantic_score):
+            raise ValueError("Semantic scores must be finite.")
+
         item = dict(result)
-        item["semantic_score"] = float(result.get("score", 0.0))
+        item["semantic_score"] = semantic_score
         item["lexical_score"] = lexical_score
         item["phrase_score"] = phrase_score
         item["hybrid_score"] = (
-            semantic_weight * item["semantic_score"]
+            semantic_weight * semantic_score
             + lexical_weight * lexical_score
             + phrase_weight * phrase_score
         )
@@ -98,3 +124,5 @@ def hybrid_rank(
     )
 
     return reranked
+
+
