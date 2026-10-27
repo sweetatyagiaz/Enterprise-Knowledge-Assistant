@@ -7,6 +7,7 @@ from ai_core.chunking import chunk_text
 from ai_core.ingestion.loaders import load_document
 from ai_core.rag import KnowledgeAssistant
 from ai_core.vector_store import VectorStore
+from ai_core.retrieval.ranking import hybrid_rank
 
 
 # --------------------------------------------------
@@ -681,6 +682,57 @@ def test_vector_store_lists_documents_and_counts_chunks(
         {"filename": "b.txt", "chunk_count": 2},
     ]
 
+def test_hybrid_rank_lexical_and_phrase_matches_can_improve_ranking():
+    results = [
+        {"text": "Unrelated content", "score": 0.6},
+        {"text": "Vector retrieval system", "score": 0.5},
+    ]
 
+    ranked = hybrid_rank("vector retrieval system", results)
+
+    assert ranked[0]["text"] == "Vector retrieval system"
+    assert ranked[0]["hybrid_score"] > ranked[1]["hybrid_score"]
+
+
+def test_hybrid_rank_handles_missing_text_and_score():
+    ranked = hybrid_rank("vector search", [{"id": 1}])
+
+    assert len(ranked) == 1
+    assert ranked[0]["semantic_score"] == 0.0
+    assert ranked[0]["lexical_score"] == 0.0
+    assert ranked[0]["phrase_score"] == 0.0
+    assert ranked[0]["hybrid_score"] == 0.0
+
+
+def test_hybrid_rank_preserves_duplicate_candidates():
+    candidate = {
+        "filename": "guide.md",
+        "text": "Vector search uses embeddings.",
+        "score": 0.8,
+    }
+
+    ranked = hybrid_rank(
+        "vector search",
+        [candidate.copy(), candidate.copy()],
+    )
+
+    assert len(ranked) == 2
+    assert all(item["filename"] == "guide.md" for item in ranked)
+    assert all("hybrid_score" in item for item in ranked)
+
+
+def test_hybrid_rank_returns_empty_results_unchanged():
+    results = []
+
+    assert hybrid_rank("vector search", results) is results
+
+
+def test_hybrid_rank_rejects_negative_weights():
+    with pytest.raises(ValueError, match="non-negative"):
+        hybrid_rank(
+            "vector search",
+            [{"text": "Vector search", "score": 0.8}],
+            semantic_weight=-0.1,
+        )
 
 
