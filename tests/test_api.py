@@ -163,3 +163,110 @@ def test_ask_endpoint_returns_503_for_runtime_error(monkeypatch):
 
     assert response.status_code == 503
     assert response.json()["detail"] == "Model service unavailable"
+
+def test_upload_document_returns_503_for_runtime_error(monkeypatch):
+    def fail_ingest(filename, content):
+        raise RuntimeError("Embedding service unavailable")
+
+    monkeypatch.setattr(
+        "api.main.get_assistant",
+        lambda: SimpleNamespace(ingest=fail_ingest),
+    )
+    monkeypatch.setattr(
+        "api.main.get_settings",
+        lambda: SimpleNamespace(max_upload_mb=1),
+    )
+
+    response = client.post(
+        "/documents",
+        files={"file": ("guide.txt", BytesIO(b"text"), "text/plain")},
+    )
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Embedding service unavailable"
+
+
+def test_upload_document_returns_500_for_unexpected_error(monkeypatch):
+    def fail_ingest(filename, content):
+        raise Exception("Unexpected failure")
+
+    monkeypatch.setattr(
+        "api.main.get_assistant",
+        lambda: SimpleNamespace(ingest=fail_ingest),
+    )
+    monkeypatch.setattr(
+        "api.main.get_settings",
+        lambda: SimpleNamespace(max_upload_mb=1),
+    )
+
+    response = client.post(
+        "/documents",
+        files={
+            "file": (
+                "guide.txt",
+                BytesIO(b"text"),
+                "text/plain",
+            )
+        },
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == (
+        "Document ingestion failed. Check the server logs."
+    )
+
+
+def test_upload_document_requires_file():
+    response = client.post("/documents")
+
+    assert response.status_code == 422
+
+
+def test_ask_endpoint_returns_400_for_value_error(monkeypatch):
+    def fail(question, top_k):
+        raise ValueError("Invalid question")
+
+    monkeypatch.setattr(
+        "api.main.get_assistant",
+        lambda: SimpleNamespace(ask=fail),
+    )
+
+    response = client.post(
+        "/ask",
+        json={"question": "Explain RAG"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Invalid question"
+
+
+def test_ask_endpoint_returns_500_for_unexpected_error(monkeypatch):
+    def fail(question, top_k):
+        raise KeyError("Unexpected failure")
+
+    monkeypatch.setattr(
+        "api.main.get_assistant",
+        lambda: SimpleNamespace(ask=fail),
+    )
+
+    response = client.post(
+        "/ask",
+        json={"question": "Explain RAG"},
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Question answering failed."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
