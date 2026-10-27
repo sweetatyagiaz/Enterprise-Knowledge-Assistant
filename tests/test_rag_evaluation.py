@@ -243,14 +243,11 @@ def test_rag_does_not_invent_answer_from_irrelevant_context(monkeypatch):
     result = assistant.ask("What is the company's annual revenue?")
 
     assert result["sources"]
-    assert "could not find relevant information" in result["answer"].lower()
+    assert "does not contain information" in result["answer"].lower()
+    assert "revenue" in result["answer"].lower()
 
-    system_message = next(
-        message["content"]
-        for message in captured_messages
-        if message["role"] == "system"
-    )
-    assert "do not invent" in system_message.lower()
+    # The financial guard abstains before invoking the LLM.
+    assert captured_messages == []
 
 def test_markdown_chunking_preserves_heading_with_content():
     text = (

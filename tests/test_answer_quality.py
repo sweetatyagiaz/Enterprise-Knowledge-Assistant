@@ -145,13 +145,7 @@ def test_unknown_revenue_answer_abstains(make_assistant):
     assert "does not contain information" in answer_lower
     assert "revenue" in answer_lower
 
-    user_message = next(
-        message["content"]
-        for message in messages
-        if message["role"] == "user"
-    )
-    assert "annual revenue" in user_message
-    assert "FastAPI" in user_message
+    assert messages == []
 
 
 def test_unknown_profit_answer_abstains(make_assistant):
@@ -180,13 +174,7 @@ def test_unknown_profit_answer_abstains(make_assistant):
     assert "does not contain information" in answer_lower
     assert "profit" in answer_lower
 
-    user_message = next(
-        message["content"]
-        for message in messages
-        if message["role"] == "user"
-    )
-    assert "annual profit" in user_message
-    assert "FastAPI" in user_message
+    assert messages == []
 
 
 def test_answer_has_source_information(make_assistant):
@@ -612,7 +600,7 @@ def test_empty_retrieval_does_not_call_llm(make_assistant, monkeypatch):
         ),
     ],
 )
-def test_unknown_financial_answers_are_not_automatically_verified(
+def test_unknown_financial_answers_abstain_without_metric_evidence(
     make_assistant, question, generated_answer, financial_terms
 ):
     chunks = [
@@ -628,11 +616,10 @@ def test_unknown_financial_answers_are_not_automatically_verified(
 
     result, _ = make_assistant(question, chunks, generated_answer)
 
-    # The mocked LLM output is returned unchanged by ask().
-    # This test documents the gap: answer generation alone does not
-    # guarantee that unsupported financial claims are rejected.
-    assert result["answer"] == generated_answer
-    assert all(term in result["answer"] for term in financial_terms)
+    # Unsupported financial values must be rejected before generation.
+    assert "does not contain information" in result["answer"].casefold()
+    assert financial_terms[0] in result["answer"].casefold()
+    assert financial_terms[1] not in result["answer"]
 
 
 

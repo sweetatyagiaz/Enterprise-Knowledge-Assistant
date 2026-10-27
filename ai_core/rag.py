@@ -4,6 +4,7 @@ from ai_core.vector_store import VectorStore
 from ai_core.ingestion.loaders import load_document
 from ai_core.chunking import chunk_text
 from ai_core.retrieval.ranking import hybrid_rank
+import re
 
 class KnowledgeAssistant:
     """Coordinates document ingestion, retrieval, and question answering."""
@@ -62,6 +63,34 @@ class KnowledgeAssistant:
                 "answer": "I could not find relevant information in the uploaded documents.",
                 "sources": [],
             }
+
+        question_lower = question.casefold()
+        financial_terms = ("revenue", "profit")
+        requested_metrics = [
+            term for term in financial_terms if term in question_lower
+        ]
+
+        if requested_metrics:
+            evidence_sentences = re.split(
+                r"(?<=[.!?])\\s+|\\n+",
+                " ".join(str(item.get("text", "")) for item in results),
+            )
+            has_metric_evidence = any(
+                any(term in sentence.casefold() for term in requested_metrics)
+                and re.search(r"\\d", sentence)
+                for sentence in evidence_sentences
+            )
+
+            if not has_metric_evidence:
+                metric = " and ".join(requested_metrics)
+                return {
+                    "answer": (
+                        "The provided document context does not contain "
+                        f"information with a numeric value for the company's "
+                        f"annual {metric}."
+                    ),
+                    "sources": results,
+                }
 
         context = "\n\n".join(
             f"[Source: {item['filename']}]\n{item['text']}"
