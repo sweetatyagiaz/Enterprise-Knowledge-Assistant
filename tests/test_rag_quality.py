@@ -216,3 +216,31 @@ def test_invalid_retrieval_score_does_not_crash_evaluation():
     assert evaluated["retrieval"]["top_ranked_score"] is None
 
 
+def test_main_returns_error_when_no_live_api_report_exists(
+    tmp_path, monkeypatch
+):
+    import tests.evaluate_rag_quality as evaluator
+
+    monkeypatch.setattr(evaluator, "REPORT_DIR", tmp_path)
+    monkeypatch.setattr(evaluator, "DATASET_PATH", tmp_path / "dataset.json")
+
+    assert evaluator.main() == 1
+
+
+def test_main_returns_error_when_reference_dataset_is_missing(
+    tmp_path, monkeypatch
+):
+    import tests.evaluate_rag_quality as evaluator
+
+    report_path = tmp_path / "live_api_evaluation_test.json"
+    report_path.write_text('{"results": []}', encoding="utf-8")
+
+    monkeypatch.setattr(evaluator, "REPORT_DIR", tmp_path)
+    monkeypatch.setattr(
+        evaluator, "DATASET_PATH", tmp_path / "missing_dataset.json"
+    )
+
+    assert evaluator.main() == 1
+
+
+
