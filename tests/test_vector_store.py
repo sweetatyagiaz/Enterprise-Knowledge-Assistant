@@ -129,3 +129,61 @@ def test_search_results_include_filename_and_score(vector_store):
     assert result["score"] == pytest.approx(1.0)
 
 
+def test_search_cache_is_invalidated_after_insert(vector_store):
+    vector_store.add_document(
+        "first.txt",
+        ["First chunk"],
+        [[1.0, 0.0]],
+    )
+
+    first = vector_store.search([1.0, 0.0])
+    assert [item["text"] for item in first] == ["First chunk"]
+
+    vector_store.add_document(
+        "second.txt",
+        ["Second chunk"],
+        [[0.0, 1.0]],
+    )
+
+    results = vector_store.search([0.0, 1.0], top_k=2)
+    assert {item["text"] for item in results} == {
+        "First chunk",
+        "Second chunk",
+    }
+
+
+def test_search_cache_detects_insert_from_another_instance(
+    tmp_path,
+    monkeypatch,
+):
+    from types import SimpleNamespace
+    import ai_core.vector_store as vector_store_module
+
+    database_path = tmp_path / "shared_vectors.sqlite3"
+    monkeypatch.setattr(
+        vector_store_module,
+        "get_settings",
+        lambda: SimpleNamespace(sqlite_path=database_path),
+    )
+
+    first_store = VectorStore()
+    second_store = VectorStore()
+
+    first_store.add_document(
+        "first.txt",
+        ["First chunk"],
+        [[1.0, 0.0]],
+    )
+    first_store.search([1.0, 0.0])
+
+    second_store.add_document(
+        "second.txt",
+        ["Second chunk"],
+        [[0.0, 1.0]],
+    )
+
+    results = first_store.search([0.0, 1.0], top_k=2)
+    assert {item["text"] for item in results} == {
+        "First chunk",
+        "Second chunk",
+    }

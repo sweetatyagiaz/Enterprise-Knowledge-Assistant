@@ -14,6 +14,8 @@ class VectorStore:
         settings = get_settings()
         self.db_path = Path(settings.sqlite_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._embedding_cache = None
+        self._cache_row_count = None
         self._initialize()
 
     def _connect(self):
@@ -74,6 +76,8 @@ class VectorStore:
                 rows,
             )
 
+        self._embedding_cache = None
+        self._cache_row_count = None
         return len(rows)
 
     def search(
@@ -105,35 +109,62 @@ class VectorStore:
         query_norm = np.linalg.norm(query)
 
         with self._connect() as connection:
-            rows = connection.execute(
-                "SELECT id, filename, chunk_text, embedding "
-                "FROM document_chunks"
-            ).fetchall()
+            row_count = connection.execute(
+                "SELECT COUNT(*) FROM document_chunks"
+            ).fetchone()[0]
 
+            if (
+                self._embedding_cache is None
+                or self._cache_row_count != row_count
+            ):
+                rows = connection.execute(
+                    "SELECT id, filename, chunk_text, embedding "
+                    "FROM document_chunks"
+                ).fetchall()
+
+                cached_rows = []
+                cached_vectors = []
+
+                for row in rows:
+                    vector = np.asarray(
+                        json.loads(row["embedding"]),
+                        dtype=np.float32,
+                    )
+
+                    if vector.ndim != 1 or vector.size == 0:
+                        continue
+
+                    if not np.isfinite(vector).all():
+                        continue
+
+                    norm = np.linalg.norm(vector)
+                    if norm == 0:
+                        continue
+
+                    cached_rows.append({
+                        "id": row["id"],
+                        "filename": row["filename"],
+                        "text": row["chunk_text"],
+                    })
+                    cached_vectors.append((vector, norm))
+
+                self._embedding_cache = (
+                    cached_rows,
+                    cached_vectors,
+                )
+                self._cache_row_count = row_count
+
+        cached_rows, cached_vectors = self._embedding_cache
         results = []
 
-        for row in rows:
-            vector = np.asarray(
-                json.loads(row["embedding"]),
-                dtype=np.float32,
-            )
-
+        for row, (vector, norm) in zip(cached_rows, cached_vectors):
             if vector.shape != query.shape:
-                continue
-
-            if not np.isfinite(vector).all():
-                continue
-
-            norm = np.linalg.norm(vector)
-            if norm == 0:
                 continue
 
             score = float(np.dot(query, vector) / (query_norm * norm))
 
             results.append({
-                "id": row["id"],
-                "filename": row["filename"],
-                "text": row["chunk_text"],
+                **row,
                 "score": score,
             })
 
