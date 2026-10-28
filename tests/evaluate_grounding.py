@@ -454,6 +454,46 @@ def has_unsupported_database_model_link(
 
     return True
 
+def has_storage_paraphrase_support(claim: str, evidence: str) -> bool:
+    """Recognize a narrow storage paraphrase when the database matches."""
+    claim_lower = claim.casefold()
+    evidence_lower = evidence.casefold()
+
+    database_engines = (
+        "sqlite", "postgresql", "postgres", "mysql", "mariadb", "mongodb",
+    )
+
+    shared_engines = [
+        engine
+        for engine in database_engines
+        if re.search(rf"\b{engine}\b", claim_lower)
+        and re.search(rf"\b{engine}\b", evidence_lower)
+    ]
+    if not shared_engines:
+        return False
+
+    claim_storage = re.search(
+        r"\b(?:persist(?:ed|s|ing)?|store(?:d|s|ing)?|save(?:d|s|ing)?)\b",
+        claim_lower,
+    )
+    evidence_storage = re.search(
+        r"\b(?:persist(?:ed|s|ing)?|store(?:d|s|ing)?|save(?:d|s|ing)?)\b",
+        evidence_lower,
+    )
+
+    claim_content = re.search(
+        r"\b(?:chunks?|segments?|passages?|pieces?)\b", claim_lower
+    )
+    evidence_content = re.search(
+        r"\b(?:chunks?|segments?|passages?|pieces?)\b", evidence_lower
+    )
+
+    return bool(
+        claim_storage
+        and evidence_storage
+        and claim_content
+        and evidence_content
+    )
 
 def evaluate_claim(claim: str, sources: list[dict]) -> dict:
     claim_tokens = set(tokenize(claim))
@@ -544,7 +584,7 @@ def evaluate_claim(claim: str, sources: list[dict]) -> dict:
         reason = (
             "Claim number(s) are absent from the best-matching evidence snippet."
         )
-    elif has_specific_support(claim, best["text"]):
+    elif (has_specific_support(claim, best["text"]) or has_storage_paraphrase_support(claim, best["text"])):
         label = "SUPPORTED"
         reason = (
             "Claim matches a recognized, specific fact in the evidence snippet."

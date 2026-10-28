@@ -749,3 +749,19 @@ def test_grounding_marks_conflicting_values_for_same_configuration_uncertain():
     )
 
     assert result["label"] == "UNCERTAIN"
+
+
+def test_grounding_accepts_semantic_paraphrase_with_low_lexical_overlap():
+    sources = [
+        {
+            "filename": "README.md",
+            "text": "The application stores document chunks in a local SQLite database.",
+        }
+    ]
+
+    result = evaluate_claim(
+        "Retrieved text segments are persisted locally using SQLite.",
+        sources,
+    )
+
+    assert result["label"] == "SUPPORTED"
