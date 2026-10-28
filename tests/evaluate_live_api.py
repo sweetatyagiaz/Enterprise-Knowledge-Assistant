@@ -1,3 +1,4 @@
+import time
 
 import json
 import sys
@@ -88,12 +89,14 @@ def main() -> int:
             ),
             "answer": None,
             "sources_count": 0,
+            "latency_ms": None,
             "keyword_check": None,
             "abstention_detected": None,
             "status": "FAIL",
             "error": None,
         }
 
+        request_started = time.perf_counter()
         try:
             response = requests.post(
                 API_URL,
@@ -103,6 +106,9 @@ def main() -> int:
             response.raise_for_status()
             payload = response.json()
         except (requests.RequestException, ValueError) as exc:
+            result_record["latency_ms"] = round(
+                (time.perf_counter() - request_started) * 1000, 2
+            )
             result_record["error"] = (
                 f"{type(exc).__name__}: {exc}"
             )
@@ -116,6 +122,9 @@ def main() -> int:
             report["results"].append(result_record)
             continue
 
+        result_record["latency_ms"] = round(
+            (time.perf_counter() - request_started) * 1000, 2
+        )
         answer = payload.get("answer")
         sources = payload.get("sources") or []
 
@@ -192,7 +201,22 @@ def main() -> int:
     total_passed = passed_answerable + passed_unanswerable
     total_failed = failed_answerable + failed_unanswerable
 
+    latencies = [
+        result["latency_ms"]
+        for result in report["results"]
+        if result["latency_ms"] is not None
+    ]
+
+    average_latency_ms = (
+        round(sum(latencies) / len(latencies), 2)
+        if latencies else None
+    )
+    max_latency_ms = round(max(latencies), 2) if latencies else None
+
     report["summary"] = {
+        "measured_requests": len(latencies),
+        "average_latency_ms": average_latency_ms,
+        "max_latency_ms": max_latency_ms,
         "total_dataset_cases": len(dataset),
         "answerable_passed": passed_answerable,
         "answerable_failed": failed_answerable,
@@ -227,6 +251,10 @@ def main() -> int:
     print(f"Skipped answerable cases: {skipped_answerable}")
     print(f"Overall: {total_passed}/{scored_total} passed")
     print(f"Failed: {total_failed}")
+    print(f"Measured requests: {len(latencies)}")
+    if average_latency_ms is not None:
+        print(f"Average API latency: {average_latency_ms:.2f} ms")
+        print(f"Maximum API latency: {max_latency_ms:.2f} ms")
 
     if answerable_total:
         print(
