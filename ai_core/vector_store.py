@@ -34,6 +34,31 @@ class VectorStore:
                 )
             """)
 
+            # Add the binary column to existing databases without deleting data.
+            columns = {
+                row["name"]
+                for row in connection.execute(
+                    "PRAGMA table_info(document_chunks)"
+                ).fetchall()
+            }
+            if "embedding_blob" not in columns:
+                connection.execute(
+                    "ALTER TABLE document_chunks ADD COLUMN embedding_blob BLOB"
+                )
+
+            # Legacy SQL updates must invalidate the binary copy for that row.
+            connection.execute("""
+                CREATE TRIGGER IF NOT EXISTS
+                document_chunks_clear_blob_after_embedding_update
+                AFTER UPDATE OF embedding ON document_chunks
+                WHEN NEW.embedding IS NOT OLD.embedding
+                BEGIN
+                    UPDATE document_chunks
+                    SET embedding_blob = NULL
+                    WHERE id = NEW.id;
+                END
+            """)
+
             connection.execute("""
                 CREATE TABLE IF NOT EXISTS vector_store_metadata (
                     id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -88,14 +113,19 @@ class VectorStore:
         rows = []
         for chunk, vector in zip(chunks, embeddings):
             validated = self._validate_vector(vector)
-            rows.append((filename, chunk, json.dumps(validated.tolist())))
+            rows.append((
+                filename,
+                chunk,
+                json.dumps(validated.tolist()),
+                sqlite3.Binary(validated.tobytes()),
+            ))
 
         with self._connect() as connection:
             connection.executemany(
                 """
                 INSERT INTO document_chunks
-                    (filename, chunk_text, embedding)
-                VALUES (?, ?, ?)
+                    (filename, chunk_text, embedding, embedding_blob)
+                VALUES (?, ?, ?, ?)
                 """,
                 rows,
             )
@@ -110,27 +140,25 @@ class VectorStore:
         top_k: int = 5,
     ) -> list[dict]:
         try:
-            query_array = np.asarray(query_vector, dtype=np.float32)
+            query = np.asarray(query_vector, dtype=np.float32)
         except (TypeError, ValueError) as exc:
             raise ValueError(
                 "Query vector must contain valid numeric values."
             ) from exc
 
-        if query_array.ndim != 1 or query_array.size == 0:
+        if query.ndim != 1 or query.size == 0:
             raise ValueError(
                 "Query vector must be a non-empty one-dimensional vector."
             )
 
-        if not np.isfinite(query_array).all():
+        if not np.isfinite(query).all():
             raise ValueError(
                 "Query vector must contain only finite numeric values."
             )
 
-        if np.linalg.norm(query_array) == 0:
-            return []
-
-        query = query_array
         query_norm = np.linalg.norm(query)
+        if query_norm == 0:
+            return []
 
         with self._connect() as connection:
             revision = connection.execute(
@@ -142,18 +170,25 @@ class VectorStore:
                 or self._cache_revision != revision
             ):
                 rows = connection.execute(
-                    "SELECT id, filename, chunk_text, embedding "
-                    "FROM document_chunks"
+                    "SELECT id, filename, chunk_text, embedding, embedding_blob "
+                    "FROM document_chunks ORDER BY id"
                 ).fetchall()
 
-                cached_rows = []
-                cached_vectors = []
+                grouped_rows = {}
+                grouped_vectors = {}
 
                 for row in rows:
-                    vector = np.asarray(
-                        json.loads(row["embedding"]),
-                        dtype=np.float32,
-                    )
+                    blob = row["embedding_blob"]
+                    if blob is not None:
+                        if len(blob) % np.dtype(np.float32).itemsize != 0:
+                            continue
+                        vector = np.frombuffer(blob, dtype=np.float32)
+                    else:
+                        # Backward compatibility for legacy JSON-only rows.
+                        vector = np.asarray(
+                            json.loads(row["embedding"]),
+                            dtype=np.float32,
+                        )
 
                     if vector.ndim != 1 or vector.size == 0:
                         continue
@@ -165,35 +200,62 @@ class VectorStore:
                     if norm == 0:
                         continue
 
-                    cached_rows.append({
+                    dimension = vector.size
+                    grouped_rows.setdefault(dimension, []).append({
                         "id": row["id"],
                         "filename": row["filename"],
                         "text": row["chunk_text"],
                     })
-                    cached_vectors.append((vector, norm))
+                    grouped_vectors.setdefault(dimension, []).append(
+                        (vector, norm)
+                    )
 
-                self._embedding_cache = (
-                    cached_rows,
-                    cached_vectors,
-                )
+                cached_groups = {}
+                for dimension, vectors in grouped_vectors.items():
+                    cached_groups[dimension] = (
+                        grouped_rows[dimension],
+                        np.ascontiguousarray(
+                            np.stack([item[0] for item in vectors]),
+                            dtype=np.float32,
+                        ),
+                        np.asarray(
+                            [item[1] for item in vectors],
+                            dtype=np.float32,
+                        ),
+                    )
+
+                self._embedding_cache = cached_groups
                 self._cache_revision = revision
 
-        cached_rows, cached_vectors = self._embedding_cache
-        results = []
+        group = self._embedding_cache.get(query.size)
+        if group is None:
+            return []
 
-        for row, (vector, norm) in zip(cached_rows, cached_vectors):
-            if vector.shape != query.shape:
-                continue
+        cached_rows, matrix, norms = group
 
-            score = float(np.dot(query, vector) / (query_norm * norm))
+        # One matrix-vector operation replaces per-embedding Python calls.
+        scores = (matrix @ query) / (norms * query_norm)
 
-            results.append({
-                **row,
-                "score": score,
-            })
+        result_count = min(max(1, top_k), len(scores))
+        if result_count < len(scores):
+            candidate_indices = np.argpartition(
+                scores, len(scores) - result_count
+            )[-result_count:]
+        else:
+            candidate_indices = np.arange(len(scores))
 
-        results.sort(key=lambda item: item["score"], reverse=True)
-        return results[:max(1, top_k)]
+        # Sort only the selected candidates, highest cosine similarity first.
+        candidate_indices = candidate_indices[
+            np.argsort(-scores[candidate_indices], kind="stable")
+        ]
+
+        return [
+            {
+                **cached_rows[int(index)],
+                "score": float(scores[index]),
+            }
+            for index in candidate_indices
+        ]
 
     def list_documents(self) -> list[dict]:
         with self._connect() as connection:

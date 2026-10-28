@@ -237,3 +237,54 @@ def test_search_cache_detects_external_delete(vector_store):
     results = vector_store.search([0.0, 1.0], top_k=2)
 
     assert [item["text"] for item in results] == ["Keep this"]
+
+
+def test_search_supports_legacy_json_only_rows(vector_store):
+    with vector_store._connect() as connection:
+        connection.execute(
+            """
+            INSERT INTO document_chunks
+                (filename, chunk_text, embedding, embedding_blob)
+            VALUES (?, ?, ?, NULL)
+            """,
+            ("legacy.txt", "Legacy JSON chunk", "[1.0, 0.0]"),
+        )
+
+    results = vector_store.search([1.0, 0.0])
+
+    assert len(results) == 1
+    assert results[0]["text"] == "Legacy JSON chunk"
+    assert results[0]["score"] == pytest.approx(1.0)
+
+
+def test_embedding_update_clears_stale_binary_blob(vector_store):
+    vector_store.add_document(
+        "guide.txt",
+        ["Original chunk"],
+        [[1.0, 0.0]],
+    )
+    vector_store.search([1.0, 0.0])
+
+    with vector_store._connect() as connection:
+        connection.execute(
+            """
+            UPDATE document_chunks
+            SET embedding = ?
+            WHERE filename = ?
+            """,
+            ("[0.0, 1.0]", "guide.txt"),
+        )
+
+        row = connection.execute(
+            """
+            SELECT embedding_blob
+            FROM document_chunks
+            WHERE filename = ?
+            """,
+            ("guide.txt",),
+        ).fetchone()
+
+    assert row["embedding_blob"] is None
+
+    results = vector_store.search([1.0, 0.0])
+    assert results[0]["score"] == pytest.approx(0.0)
