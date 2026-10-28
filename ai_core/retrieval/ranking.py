@@ -116,11 +116,12 @@ def hybrid_rank(
         item["semantic_score"] = semantic_score
         item["lexical_score"] = lexical_score
         item["phrase_score"] = phrase_score
+        total_weight = sum(weights)
         item["hybrid_score"] = (
             semantic_weight * semantic_score
             + lexical_weight * lexical_score
             + phrase_weight * phrase_score
-        )
+        ) / total_weight
 
         reranked.append(item)
 

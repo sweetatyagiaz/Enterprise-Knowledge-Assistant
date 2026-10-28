@@ -825,3 +825,12 @@ def test_chunk_text_preserves_content_across_overlapping_chunks():
     assert all(word in " ".join(chunks) for word in text.split())
 
 
+
+
+def test_hybrid_rank_normalizes_weighted_score():
+    ranked = hybrid_rank(
+        "vector search",
+        [{"text": "Vector search", "score": 1.0}],
+    )
+
+    assert ranked[0]["hybrid_score"] == pytest.approx(1.0)
