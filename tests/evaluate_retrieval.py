@@ -4,6 +4,12 @@ from pathlib import Path
 
 from ai_core.embeddings import EmbeddingService
 from ai_core.retrieval.ranking import hybrid_rank
+from ai_core.evaluation.retrieval_metrics import (
+    ndcg_at_k,
+    precision_at_k,
+    recall_at_k,
+    reciprocal_rank,
+)
 from ai_core.vector_store import VectorStore
 
 
@@ -35,6 +41,11 @@ def main():
     precision_at_k_scores = []
     evidence_hit_at_k_scores = []
 
+    rerank_precision_scores = []
+    rerank_recall_scores = []
+    rerank_mrr_scores = []
+    rerank_ndcg_scores = []
+
     for item in dataset:
         question = item["question"]
         expected_source = item.get("expected_source")
@@ -47,6 +58,35 @@ def main():
             top_k=CANDIDATE_K,
         )
         results = hybrid_rank(question, candidates)[:TOP_K]
+
+        # These relevance labels are keyword-based proxies, not human-
+        # judged relevance labels. Recall is relative to the candidate pool.
+        if keywords:
+            candidate_relevance = {
+                str(result["id"]): float(
+                    contains_all_keywords(result.get("text", ""), keywords)
+                )
+                for result in candidates
+            }
+            relevant_candidate_ids = {
+                item_id
+                for item_id, grade in candidate_relevance.items()
+                if grade > 0
+            }
+            ranked_ids = [str(result["id"]) for result in results]
+
+            rerank_precision_scores.append(
+                precision_at_k(ranked_ids, relevant_candidate_ids, TOP_K)
+            )
+            rerank_recall_scores.append(
+                recall_at_k(ranked_ids, relevant_candidate_ids, TOP_K)
+            )
+            rerank_mrr_scores.append(
+                reciprocal_rank(ranked_ids, relevant_candidate_ids)
+            )
+            rerank_ndcg_scores.append(
+                ndcg_at_k(ranked_ids, candidate_relevance, TOP_K)
+            )
 
         texts = [result.get("text", "") for result in results]
         top_1_text = texts[0] if texts else ""
@@ -169,6 +209,24 @@ def main():
                 f"{sum(evidence_hit_at_k_scores) / len(evidence_hit_at_k_scores):.1%}"
             )
 
+        if rerank_precision_scores:
+            print(
+                f"Keyword-proxy reranking Precision@{TOP_K}: "
+                f"{sum(rerank_precision_scores) / len(rerank_precision_scores):.1%}"
+            )
+            print(
+                f"Keyword-proxy candidate-pool Recall@{TOP_K}: "
+                f"{sum(rerank_recall_scores) / len(rerank_recall_scores):.1%}"
+            )
+            print(
+                f"Keyword-proxy reranking MRR: "
+                f"{sum(rerank_mrr_scores) / len(rerank_mrr_scores):.3f}"
+            )
+            print(
+                f"Keyword-proxy reranking nDCG@{TOP_K}: "
+                f"{sum(rerank_ndcg_scores) / len(rerank_ndcg_scores):.3f}"
+            )
+
         if keyword_test_count:
             print(
                 f"Keyword coverage @1: "
@@ -180,9 +238,11 @@ def main():
             )
 
     print(
-        "\nNote: these are keyword-based evidence proxies, not a measure "
-        "of generated-answer factuality. Unanswerable cases require a "
-        "separate test of whether the assistant correctly abstains."
+        "\nNote: keyword-proxy reranking metrics use the initial candidate "
+        "pool as their relevance universe. They do not measure recall across "
+        "the full database or replace human-judged relevance labels. These "
+        "metrics do not measure generated-answer factuality. Unanswerable "
+        "cases require separate abstention evaluation."
     )
 
 
