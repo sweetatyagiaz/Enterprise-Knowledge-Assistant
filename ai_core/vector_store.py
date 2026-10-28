@@ -15,7 +15,7 @@ class VectorStore:
         self.db_path = Path(settings.sqlite_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._embedding_cache = None
-        self._cache_row_count = None
+        self._cache_revision = None
         self._initialize()
 
     def _connect(self):
@@ -33,6 +33,30 @@ class VectorStore:
                     embedding TEXT NOT NULL
                 )
             """)
+
+            connection.execute("""
+                CREATE TABLE IF NOT EXISTS vector_store_metadata (
+                    id INTEGER PRIMARY KEY CHECK (id = 1),
+                    revision INTEGER NOT NULL DEFAULT 0
+                )
+            """)
+
+            connection.execute("""
+                INSERT OR IGNORE INTO vector_store_metadata (id, revision)
+                VALUES (1, 0)
+            """)
+
+            for operation in ("INSERT", "UPDATE", "DELETE"):
+                connection.execute(f"""
+                    CREATE TRIGGER IF NOT EXISTS
+                    document_chunks_revision_{operation.lower()}
+                    AFTER {operation} ON document_chunks
+                    BEGIN
+                        UPDATE vector_store_metadata
+                        SET revision = revision + 1
+                        WHERE id = 1;
+                    END
+                """)
 
     @staticmethod
     def _validate_vector(vector, label="Embedding"):
@@ -77,7 +101,7 @@ class VectorStore:
             )
 
         self._embedding_cache = None
-        self._cache_row_count = None
+        self._cache_revision = None
         return len(rows)
 
     def search(
@@ -109,13 +133,13 @@ class VectorStore:
         query_norm = np.linalg.norm(query)
 
         with self._connect() as connection:
-            row_count = connection.execute(
-                "SELECT COUNT(*) FROM document_chunks"
+            revision = connection.execute(
+                "SELECT revision FROM vector_store_metadata WHERE id = 1"
             ).fetchone()[0]
 
             if (
                 self._embedding_cache is None
-                or self._cache_row_count != row_count
+                or self._cache_revision != revision
             ):
                 rows = connection.execute(
                     "SELECT id, filename, chunk_text, embedding "
@@ -152,7 +176,7 @@ class VectorStore:
                     cached_rows,
                     cached_vectors,
                 )
-                self._cache_row_count = row_count
+                self._cache_revision = revision
 
         cached_rows, cached_vectors = self._embedding_cache
         results = []

@@ -187,3 +187,53 @@ def test_search_cache_detects_insert_from_another_instance(
         "First chunk",
         "Second chunk",
     }
+
+
+def test_search_cache_detects_update_without_row_count_change(vector_store):
+    vector_store.add_document(
+        "guide.txt",
+        ["First chunk", "Second chunk"],
+        [[1.0, 0.0], [0.0, 1.0]],
+    )
+
+    before = vector_store.search([1.0, 0.0], top_k=2)
+    assert before[0]["text"] == "First chunk"
+
+    # Update the existing row through a separate database connection.
+    with vector_store._connect() as connection:
+        connection.execute(
+            """
+            UPDATE document_chunks
+            SET chunk_text = ?, embedding = ?
+            WHERE filename = ? AND chunk_text = ?
+            """,
+            ("Updated chunk", "[0.0, 1.0]", "guide.txt", "First chunk"),
+        )
+
+    after = vector_store.search([1.0, 0.0], top_k=2)
+
+    assert len(after) == 2
+    assert "Updated chunk" in {item["text"] for item in after}
+    assert next(
+        item for item in after if item["text"] == "Updated chunk"
+    )["score"] == pytest.approx(0.0)
+
+
+def test_search_cache_detects_external_delete(vector_store):
+    vector_store.add_document(
+        "guide.txt",
+        ["Keep this", "Delete this"],
+        [[1.0, 0.0], [0.0, 1.0]],
+    )
+
+    vector_store.search([1.0, 0.0], top_k=2)
+
+    with vector_store._connect() as connection:
+        connection.execute(
+            "DELETE FROM document_chunks WHERE chunk_text = ?",
+            ("Delete this",),
+        )
+
+    results = vector_store.search([0.0, 1.0], top_k=2)
+
+    assert [item["text"] for item in results] == ["Keep this"]
