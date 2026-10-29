@@ -1,0 +1,1403 @@
+{
+  "timestamp_utc": "2026-10-29T05:53:34.230752+00:00",
+  "dataset": "tests/data/rag_eval.json",
+  "method": "Hybrid retrieval with keyword-based relevance proxies and separate human-reviewed chunk-level relevance labels.",
+  "configuration": {
+    "top_k": 5,
+    "candidate_k": 10
+  },
+  "metric_definitions": {
+    "source_hit_rate": "Fraction of cases with an expected source where that source appears in the top-k retrieved results.",
+    "keyword_evidence_rate_at_1": "Fraction of labeled cases where the top-ranked passage contains all expected keywords.",
+    "keyword_evidence_rate_at_k": "Fraction of labeled cases where all expected keywords appear across the combined top-k retrieved text.",
+    "reranking_metrics": "Keyword-proxy relevance metrics over the initial candidate pool; not human-judged relevance.",
+    "reviewed_relevance_metrics": "Precision, recall, MRR, and NDCG computed using reviewed chunk-level labels. Recall is relative to the known labeled relevant chunks and may not represent exhaustive corpus recall."
+  },
+  "ground_truth_policy": "Reviewed evidence descriptions remain metadata and are not automatically converted into chunk-level relevance labels. Separately reviewed chunk-level labels are used only for cases explicitly present in the relevance-label dataset. Unlabeled cases are not treated as zero-scoring reviewed cases.",
+  "summary": {
+    "total_cases": 18,
+    "answerable_cases": 14,
+    "unanswerable_cases": 4,
+    "answerable": {
+      "cases": 14,
+      "source_hit_rate": {
+        "evaluated_cases": 14,
+        "mean": 1.0
+      },
+      "keyword_evidence_rate_at_1": {
+        "evaluated_cases": 14,
+        "mean": 1.0
+      },
+      "keyword_evidence_rate_at_k": {
+        "evaluated_cases": 14,
+        "mean": 1.0
+      },
+      "reranking_precision_at_k": {
+        "evaluated_cases": 14,
+        "mean": 0.4
+      },
+      "reranking_recall_at_k": {
+        "evaluated_cases": 14,
+        "mean": 0.8155
+      },
+      "reranking_mrr": {
+        "evaluated_cases": 14,
+        "mean": 1.0
+      },
+      "reranking_ndcg_at_k": {
+        "evaluated_cases": 14,
+        "mean": 0.8525
+      },
+      "reviewed_relevance_cases": 10,
+      "reviewed_precision_at_k": {
+        "evaluated_cases": 10,
+        "mean": 0.32
+      },
+      "reviewed_recall_at_k": {
+        "evaluated_cases": 10,
+        "mean": 0.85
+      },
+      "reviewed_mrr": {
+        "evaluated_cases": 10,
+        "mean": 0.95
+      },
+      "reviewed_ndcg_at_k": {
+        "evaluated_cases": 10,
+        "mean": 0.8223
+      }
+    },
+    "unanswerable": {
+      "cases": 4,
+      "source_hit_rate": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "keyword_evidence_rate_at_1": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "keyword_evidence_rate_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reranking_precision_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reranking_recall_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reranking_mrr": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reranking_ndcg_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reviewed_relevance_cases": 0,
+      "reviewed_precision_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reviewed_recall_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reviewed_mrr": {
+        "evaluated_cases": 0,
+        "mean": null
+      },
+      "reviewed_ndcg_at_k": {
+        "evaluated_cases": 0,
+        "mean": null
+      }
+    }
+  },
+  "limitations": [
+    "Keyword matching is a relevance proxy, not human-judged relevance.",
+    "Reranking recall is relative to the initial candidate pool.",
+    "Reviewed-label recall is relative to known labels, not necessarily all relevant corpus chunks.",
+    "Source hits do not prove that a passage supports the answer.",
+    "Retrieval metrics do not measure generated-answer factuality.",
+    "Unanswerable-case retrieval statistics do not measure abstention quality.",
+    "Undefined metrics are reported as null, not as zero."
+  ],
+  "results": [
+    {
+      "id": "RAG-001",
+      "question": "What are the main components of this project's RAG architecture?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "Document Loader",
+        "Text Chunking",
+        "OpenAI Embeddings",
+        "SQLite Vector Store",
+        "Similarity Search",
+        "OpenAI Chat Model"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:89-96 — Main RAG Architecture Components lists all eight components and their roles."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.6131471927654584,
+        "candidate_relevant_count": 2
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "known_relevant_chunk_count": 1,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.5955439575134762,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.424935854048956,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "172",
+          "filename": "README.md",
+          "score": 0.3636598887897673,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "169",
+          "filename": "README.md",
+          "score": 0.34654131333033245,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "185",
+          "filename": "README.md",
+          "score": 0.3243880293672047,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-002",
+      "question": "Which embedding model does the project use by default?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "text-embedding-3-small"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:91 — text-embedding-3-small is the default embedding model and produces 1536-dimensional vectors.",
+        "README.md:139 — Confirms the default embedding model and its configuration through EMBEDDING_MODEL."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.8,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.9828920819566879,
+        "candidate_relevant_count": 4
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.9197207891481876,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.7493745599474225,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.5921801456383295,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.5546510602746691,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 4,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.5160515975384484,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "180",
+          "filename": "README.md",
+          "score": 0.47737672499247963,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-003",
+      "question": "Which database stores the document chunks and embeddings?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "sqlite"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:92 — Identifies the SQLite vector store and data/vector_store.sqlite3 path.",
+        "README.md:143 — Confirms that document chunks and embedding vectors are stored in SQLite."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.8,
+        "recall_at_k": 0.6666666666666666,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.8687949224876582,
+        "candidate_relevant_count": 6
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.6058412631352743,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.5689999239785332,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 3,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.5440438912028358,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.5141920152164642,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.37656503944169906,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-004",
+      "question": "What is the default number of retrieved chunks?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "retrieved chunks",
+        "5"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:100 — Default Retrieval Configuration states that 5 chunks are retrieved by default and top_k can override the value.",
+        "README.md:143 — Confirms retrieval returns 5 chunks by default."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "candidate_relevant_count": 1
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.9197207891481876,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "174",
+          "filename": "README.md",
+          "score": 0.7965407797268458,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.5504496296246846,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.4277199795321812,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 4,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.32862382654159783,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "183",
+          "filename": "README.md",
+          "score": 0.30267823712220265,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-005",
+      "question": "What is the company's annual revenue?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_keywords": [],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:8-16 and README.md:87-100 — The documented project scope covers RAG features, architecture, and retrieval configuration; it does not provide company financial figures.",
+        "Project-wide search — Revenue references occur in tests and evaluation reports about abstention behavior, not in a financial-data source."
+      ],
+      "retrieved_count": 5,
+      "source_rank": null,
+      "keyword_evidence_rank": null,
+      "keyword_evidence_at_1": null,
+      "keyword_evidence_at_k": null,
+      "reranking_metrics": null,
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.13160525688103267,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.1283754301922662,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "175",
+          "filename": "README.md",
+          "score": 0.10836446923868996,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.10530413261481693,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "169",
+          "filename": "README.md",
+          "score": 0.10522837085383278,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-006",
+      "question": "Which chat completion model does the project use by default?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "gpt-4.1-mini"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:95 — Identifies gpt-4.1-mini as the default OpenAI Chat Model.",
+        "README.md:141 — Confirms the default chat completion model and CHAT_MODEL configuration."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.6,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "candidate_relevant_count": 3
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.9197207891481876,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.7050430944987705,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.6124696092946188,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.39792300027514255,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 4,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.38063612059941365,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.26257193514278954,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-007",
+      "question": "How many dimensions are in the default embedding vectors?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "1536"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:139 — States that the default embedding model generates 1536-dimensional vectors.",
+        "README.md:160 — Sets EMBEDDING_DIMENSIONS=1536."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.6,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.9674679834891693,
+        "candidate_relevant_count": 3
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "mrr": 0.5,
+        "ndcg_at_k": 0.3868528072345416,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.5069546273776463,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.33321162206786015,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 3,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.32515946030616755,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.3242676442577725,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.3017794262795221,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-008",
+      "question": "What is the configured text chunk size?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "900"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:163 — Sets CHUNK_SIZE=900.",
+        "README.md:264-265 — The configuration table describes CHUNK_SIZE as the number of characters per text chunk."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.8503449055347546,
+        "candidate_relevant_count": 2
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.8503449055347546,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.4961922868849739,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.3752426859878358,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.3566954419726417,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "174",
+          "filename": "README.md",
+          "score": 0.32889981354985914,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "180",
+          "filename": "README.md",
+          "score": 0.3220912279590728,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        }
+      ]
+    },
+    {
+      "id": "RAG-009",
+      "question": "How much overlap is configured between text chunks?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "150"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:164 — Sets CHUNK_OVERLAP=150."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "candidate_relevant_count": 1
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.6131471927654584,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.3967408485828884,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.36757384595416837,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.307016055262278,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "174",
+          "filename": "README.md",
+          "score": 0.3061068502683488,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.30082532716175864,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-010",
+      "question": "Which document formats can users upload?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "PDF",
+        "DOCX",
+        "TXT",
+        "Markdown"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:11 — Lists PDF, DOCX, TXT, and Markdown as supported upload formats.",
+        "README.md:193-194 — The upload instructions list the same four formats."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 0.6666666666666666,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.7653606369886217,
+        "candidate_relevant_count": 3
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "183",
+          "filename": "README.md",
+          "score": 0.43207420649982636,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.3833689735049293,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 3,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.3613138073966617,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "186",
+          "filename": "README.md",
+          "score": 0.330724192800976,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.32781928153265094,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-011",
+      "question": "What is the maximum document upload size?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "15"
+      ],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:166 — Sets MAX_UPLOAD_MB=15.",
+        "README.md:272-273 — Documents MAX_UPLOAD_MB as the maximum upload size in MB, with a value of 15."
+      ],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.6131471927654584,
+        "candidate_relevant_count": 2
+      },
+      "reviewed_relevance_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.6131471927654584,
+        "known_relevant_chunk_count": 2,
+        "relevance_judgment": "reviewed_chunk_labels"
+      },
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.43306379422308905,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": 2
+        },
+        {
+          "rank": 2,
+          "id": "183",
+          "filename": "README.md",
+          "score": 0.3819278152216048,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.34356626773637433,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.3350112324669247,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "186",
+          "filename": "README.md",
+          "score": 0.2694745844318753,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-012",
+      "question": "What is the company's annual profit?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_keywords": [],
+      "ground_truth_reviewed": true,
+      "relevant_evidence": [
+        "README.md:8-16 and README.md:87-100 — The documented project scope covers RAG features, architecture, and retrieval configuration; it does not provide company financial figures.",
+        "Project-wide search — Profit references occur in tests and evaluation reports about abstention behavior, not in a financial-data source."
+      ],
+      "retrieved_count": 5,
+      "source_rank": null,
+      "keyword_evidence_rank": null,
+      "keyword_evidence_at_1": null,
+      "keyword_evidence_at_k": null,
+      "reranking_metrics": null,
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.10832057467528751,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.09652182459831238,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.08996936891760145,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.07735242268868854,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "185",
+          "filename": "README.md",
+          "score": 0.07415165326425006,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-013",
+      "question": "Which OpenAI embedding model generates the vectors used by this application?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "text-embedding-3-small"
+      ],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.6,
+        "recall_at_k": 0.75,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.8048099750039491,
+        "candidate_relevant_count": 4
+      },
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.5691745743459585,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "173",
+          "filename": "README.md",
+          "score": 0.47735376950023933,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.45714989933026895,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.44998901859432666,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.41455446173544647,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-014",
+      "question": "How many characters of text are included in each chunk by default?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "900"
+      ],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "candidate_relevant_count": 1
+      },
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.3871922677471524,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.34523119008730324,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "174",
+          "filename": "README.md",
+          "score": 0.3206902529512133,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.2931537604521191,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.27963740485055105,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-015",
+      "question": "How many characters from one chunk are repeated in the next chunk?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "150"
+      ],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_k": 1.0,
+        "candidate_relevant_count": 1
+      },
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.2794921029181707,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "174",
+          "filename": "README.md",
+          "score": 0.26448339223861694,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "171",
+          "filename": "README.md",
+          "score": 0.20532461149351935,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.2003395983151027,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "179",
+          "filename": "README.md",
+          "score": 0.19178066934858048,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-016",
+      "question": "What is the largest permitted file upload in megabytes?",
+      "answerable": true,
+      "expected_source": "README.md",
+      "expected_keywords": [
+        "15"
+      ],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": 1,
+      "keyword_evidence_rank": 1,
+      "keyword_evidence_at_1": 1.0,
+      "keyword_evidence_at_k": 1.0,
+      "reranking_metrics": {
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.3333333333333333,
+        "mrr": 1.0,
+        "ndcg_at_k": 0.46927872602275644,
+        "candidate_relevant_count": 3
+      },
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.29569167551540193,
+          "keyword_relevant_proxy": true,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "183",
+          "filename": "README.md",
+          "score": 0.2835808569476718,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.27753622219676066,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.20727077140694572,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "186",
+          "filename": "README.md",
+          "score": 0.16974550712676276,
+          "keyword_relevant_proxy": false,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-017",
+      "question": "What is the company's annual revenue in rupees?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_keywords": [],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": null,
+      "keyword_evidence_rank": null,
+      "keyword_evidence_at_1": null,
+      "keyword_evidence_at_k": null,
+      "reranking_metrics": null,
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.1249405209507261,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.11853436274187905,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "175",
+          "filename": "README.md",
+          "score": 0.10701236980301992,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.10469704866409302,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.10116851755550929,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    },
+    {
+      "id": "RAG-018",
+      "question": "What is the company's annual profit in rupees?",
+      "answerable": false,
+      "expected_source": null,
+      "expected_keywords": [],
+      "ground_truth_reviewed": false,
+      "relevant_evidence": [],
+      "retrieved_count": 5,
+      "source_rank": null,
+      "keyword_evidence_rank": null,
+      "keyword_evidence_at_1": null,
+      "keyword_evidence_at_k": null,
+      "reranking_metrics": null,
+      "reviewed_relevance_metrics": null,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "191",
+          "filename": "README.md",
+          "score": 0.10096502091203417,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 2,
+          "id": "190",
+          "filename": "README.md",
+          "score": 0.09493622396673475,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 3,
+          "id": "188",
+          "filename": "README.md",
+          "score": 0.08555390472923007,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 4,
+          "id": "187",
+          "filename": "README.md",
+          "score": 0.07988223539931433,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        },
+        {
+          "rank": 5,
+          "id": "170",
+          "filename": "README.md",
+          "score": 0.07884881858314786,
+          "keyword_relevant_proxy": null,
+          "reviewed_relevance_grade": null
+        }
+      ]
+    }
+  ],
+  "ground_truth_dataset": "tests/data/rag_ground_truth.json",
+  "reviewed_ground_truth_cases": 12,
+  "reviewed_relevance_dataset": "tests/data/retrieval_relevance_labels.json",
+  "reviewed_relevance_label_cases": 10,
+  "reviewed_relevance_label_count": 19
+}

@@ -18,6 +18,12 @@ def _metric_summary(values: list[float | None]) -> dict[str, Any]:
 
 def _group_summary(cases: list[dict[str, Any]]) -> dict[str, Any]:
     """Summarize retrieval diagnostics for one answerability group."""
+    reviewed_cases = [
+        case
+        for case in cases
+        if case.get("reviewed_relevance_metrics") is not None
+    ]
+
     return {
         "cases": len(cases),
         "source_hit_rate": _metric_summary(
@@ -69,6 +75,31 @@ def _group_summary(cases: list[dict[str, Any]]) -> dict[str, Any]:
                 if case.get("reranking_metrics") is not None
             ]
         ),
+        "reviewed_relevance_cases": len(reviewed_cases),
+        "reviewed_precision_at_k": _metric_summary(
+            [
+                case["reviewed_relevance_metrics"]["precision_at_k"]
+                for case in reviewed_cases
+            ]
+        ),
+        "reviewed_recall_at_k": _metric_summary(
+            [
+                case["reviewed_relevance_metrics"]["recall_at_k"]
+                for case in reviewed_cases
+            ]
+        ),
+        "reviewed_mrr": _metric_summary(
+            [
+                case["reviewed_relevance_metrics"]["mrr"]
+                for case in reviewed_cases
+            ]
+        ),
+        "reviewed_ndcg_at_k": _metric_summary(
+            [
+                case["reviewed_relevance_metrics"]["ndcg_at_k"]
+                for case in reviewed_cases
+            ]
+        ),
     }
 
 
@@ -92,7 +123,10 @@ def build_retrieval_report(
             timestamp_utc or datetime.now(timezone.utc).isoformat()
         ),
         "dataset": dataset_path,
-        "method": "Hybrid retrieval with keyword-based relevance proxies.",
+        "method": (
+            "Hybrid retrieval with keyword-based relevance proxies and "
+            "separate human-reviewed chunk-level relevance labels."
+        ),
         "configuration": {
             "top_k": top_k,
             "candidate_k": candidate_k,
@@ -114,11 +148,18 @@ def build_retrieval_report(
                 "Keyword-proxy relevance metrics over the initial candidate "
                 "pool; not human-judged relevance."
             ),
+            "reviewed_relevance_metrics": (
+                "Precision, recall, MRR, and NDCG computed using reviewed "
+                "chunk-level labels. Recall is relative to the known labeled "
+                "relevant chunks and may not represent exhaustive corpus recall."
+            ),
         },
         "ground_truth_policy": (
-            "Reviewed evidence descriptions are retained as metadata. "
-            "They are not automatically converted into chunk-level "
-            "relevance labels."
+            "Reviewed evidence descriptions remain metadata and are not "
+            "automatically converted into chunk-level relevance labels. "
+            "Separately reviewed chunk-level labels are used only for cases "
+            "explicitly present in the relevance-label dataset. Unlabeled "
+            "cases are not treated as zero-scoring reviewed cases."
         ),
         "summary": {
             "total_cases": len(cases),
@@ -130,6 +171,7 @@ def build_retrieval_report(
         "limitations": [
             "Keyword matching is a relevance proxy, not human-judged relevance.",
             "Reranking recall is relative to the initial candidate pool.",
+            "Reviewed-label recall is relative to known labels, not necessarily all relevant corpus chunks.",
             "Source hits do not prove that a passage supports the answer.",
             "Retrieval metrics do not measure generated-answer factuality.",
             "Unanswerable-case retrieval statistics do not measure abstention quality.",
