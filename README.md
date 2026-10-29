@@ -1,9 +1,11 @@
 # Enterprise Knowledge Assistant
 
-A starter Retrieval-Augmented Generation (RAG) application built with
-**FastAPI**, **OpenAI embeddings**, **SQLite**, and **NumPy**. Upload
-documents, index their text chunks, and ask questions grounded in
-retrieved passages.
+[![Tests](https://github.com/sweetatyagiaz/Enterprise-Knowledge-Assistant/actions/workflows/tests.yml/badge.svg)](https://github.com/sweetatyagiaz/Enterprise-Knowledge-Assistant/actions/workflows/tests.yml)
+
+A practical Retrieval-Augmented Generation (RAG) application that lets users index documents and ask questions grounded in retrieved passages. The project is built with **FastAPI, OpenAI embeddings, SQLite, and NumPy**.
+
+> **Project status:** Learning and portfolio project. The current implementation is designed for local experimentation and small corpora; it is not presented as a production-hardened, high-scale enterprise service.
+
 
 ## Features
 
@@ -76,7 +78,7 @@ ai-architect-portfolio/
 ├── data/
 ├── .env.example
 ├── .gitignore
-├── requirements.txt
+├── requirements-app.txt
 └── README.md
 ```
 
@@ -124,10 +126,10 @@ own virtual environment.
 ### 2. Install dependencies
 
 ``` bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-app.txt
 ```
 
-If `requirements.txt` is not complete yet, install the required
+If `requirements-app.txt` is not complete yet, install the required
 packages:
 
 ``` bash
@@ -289,6 +291,162 @@ Run tests, if the test suite is present:
 ``` bash
 python -m pytest -q
 ```
+
+
+## Who this project is for
+
+- **Developers and students** learning how to build a RAG application end to end.
+- **AI engineers** exploring document ingestion, chunking, embeddings, retrieval, and answer grounding.
+- **Teams evaluating prototypes** before deciding whether to build a larger knowledge-assistant service.
+
+## What you can do
+
+1. Upload a PDF, DOCX, TXT, or Markdown document.
+2. Extract and split its text into chunks.
+3. Create embeddings and store chunks locally in SQLite.
+4. Ask questions against the indexed content.
+5. Inspect returned source information and run retrieval/grounding evaluations.
+
+## Quick start
+
+### Prerequisites
+
+- Git
+- A Python version supported by the project dependencies
+- An OpenAI API key for model calls
+- Network access to the configured OpenAI API
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sweetatyagiaz/Enterprise-Knowledge-Assistant.git
+cd Enterprise-Knowledge-Assistant
+```
+
+### 2. Create and activate a virtual environment
+
+Linux/macOS:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements-app.txt
+```
+
+### 4. Configure environment variables
+
+Create a local `.env` file based on `.env.example` and set the required values. Never commit `.env` or paste real credentials into issues, logs, screenshots, or pull requests.
+
+### 5. Start the API
+
+```bash
+python -m uvicorn api.main:app --reload
+```
+
+Then open:
+
+- Swagger UI: <http://127.0.0.1:8000/docs>
+- Health check: <http://127.0.0.1:8000/health>
+
+If the documented setup does not work on a clean environment, please open an issue with the operating system, Python version, command run, and sanitized error output.
+
+## Try the API
+
+### Upload and index a document
+
+```bash
+curl -X POST "http://127.0.0.1:8000/documents" \
+  -F "file=@README.md"
+```
+
+### List indexed documents
+
+```bash
+curl "http://127.0.0.1:8000/documents"
+```
+
+### Ask a question
+
+```bash
+curl -X POST "http://127.0.0.1:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What are the main components of this project?"
+  }'
+```
+
+The exact request fields and response schema should be checked in Swagger UI (`/docs`) for the version you are running. Answers depend on the indexed documents, retrieval results, model configuration, and external API availability.
+
+## Architecture at a glance
+
+```mermaid
+flowchart TD
+    A["PDF / DOCX / TXT / Markdown"] --> B["Document validation and text extraction"]
+    B --> C["Chunking"]
+    C --> D["Embedding service"]
+    D --> E["SQLite vector store"]
+    Q["User question"] --> QE["Query embedding"]
+    QE --> R["Similarity retrieval"]
+    E --> R
+    R --> CTX["Retrieved context"]
+    CTX --> LLM["Chat model"]
+    LLM --> ANS["Answer with source information"]
+```
+
+This diagram describes the documented high-level flow. It does not imply that every deployment has production-grade authentication, authorization, OCR, multi-tenant isolation, or a distributed vector database.
+
+## Documentation
+
+- [API examples and endpoint guide](docs/API_REFERENCE.md)
+- [Evaluation methodology and recorded results](docs/EVALUATION.md)
+- [Local deployment and production-readiness notes](docs/DEPLOYMENT.md)
+- [Roadmap](ROADMAP.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security and vulnerability reporting](SECURITY.md)
+- [Community guidelines](CODE_OF_CONDUCT.md)
+- [Screenshot and demo checklist](docs/SCREENSHOTS.md)
+- [License decision note](LICENSE.DRAFT.md)
+
+## Evaluation and quality
+
+The project has a growing automated test suite and a retrieval evaluation workflow. The latest recorded Sprint 20 run reported **309 passing tests** and a reviewed-relevance evaluation covering **10 answerable cases and 19 chunk labels**. On that reviewed subset, recorded metrics were Precision@5 **0.32**, Recall@5 **0.85**, MRR **0.95**, and nDCG@5 **0.8223**.
+
+These figures describe a specific local evaluation run, not a guarantee of accuracy on arbitrary corpora. Recall is relative to the reviewed labels available for those cases; it is not exhaustive corpus-wide recall. See [the evaluation notes](docs/EVALUATION.md) for interpretation and reproducibility caveats.
+
+## Screenshots and demo
+
+Screenshots should be captured from the real running application and added only after checking that they contain no API keys, private documents, personal data, or other sensitive content. The [screenshot checklist](docs/SCREENSHOTS.md) describes the recommended images.
+
+## Security, privacy, and limitations
+
+- Treat uploaded documents and model responses as potentially sensitive.
+- Review the configured model provider's data handling and terms before sending confidential material.
+- Do not use real secrets in source control, bug reports, test fixtures, or screenshots.
+- Retrieved sources can help users inspect evidence, but citations do not guarantee that every generated claim is correct.
+- The current local SQLite/NumPy design is intended for a small prototype. Production use requires a separate security, privacy, performance, reliability, and operational review.
+- The repository's current state and actual implemented controls are the source of truth; roadmap items are not implemented features.
+
+## Contributing
+
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), run the test suite before submitting a pull request, and include tests for behavior changes. Please do not commit `tests/data/` evaluation labels or other local/private datasets.
+
+## License
+
+A license has not been selected in this documentation bundle. Review `LICENSE.DRAFT.md` and choose the license that matches your ownership and distribution intentions before publishing the repository as open source. Until an actual license is added, do not assume users have permission to reuse, modify, or redistribute the code.
+
 
 ## Development history: Sprints 1–20
 

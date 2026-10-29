@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+openai
+pypdf
+python-docx
+numpy
+python-multipart
+pytest
+httpx

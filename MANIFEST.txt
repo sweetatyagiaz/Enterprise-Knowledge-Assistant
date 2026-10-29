@@ -1,0 +1,14 @@
+.github/ISSUE_TEMPLATE/bug_report.yml
+.github/ISSUE_TEMPLATE/feature_request.yml
+.github/pull_request_template.md
+.github/workflows/tests.yml
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE.DRAFT.md
+README.md
+ROADMAP.md
+SECURITY.md
+docs/API_REFERENCE.md
+docs/DEPLOYMENT.md
+docs/EVALUATION.md
+docs/SCREENSHOTS.md
